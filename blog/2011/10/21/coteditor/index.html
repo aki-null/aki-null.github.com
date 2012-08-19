@@ -19,9 +19,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://aki-null.github.com/blog/2011/10/21/coteditor">
-  <link href="/favicon.ico" rel="icon">
-  
+  <link rel="canonical" href="http://aki-null.github.com/blog/2011/10/21/coteditor/">
+  <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="/javascripts/ender.js"></script>
@@ -35,23 +34,19 @@
 
 </head>
 
-<body   class="no-sidebar"  >
+<body   >
   <header role="banner"><hgroup>
   <h1><a href="/">Nullified Construction</a></h1>
   
-    <h2>Random stuff I do</h2>
+    <h2>NULL</h2>
   
 </hgroup>
 
 </header>
-  <nav role="navigation">
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
   
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:aki-null.github.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
+</ul>
   
 <ul class="main-navigation">
   <li><a href="/">Blog</a></li>
@@ -105,7 +100,7 @@
       
   
 
-<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (Akihiro Noguchi)" rel="author">Akihiro Noguchi</a></span></span>
+<span class="byline author vcard">Posted by <span class="fn">Akihiro Noguchi</span></span>
 
       
 
@@ -139,13 +134,92 @@
         <a class="basic-alignment left" href="/blog/2011/05/09/markdown/" title="Previous Post: Markdownが面白い">&laquo; Markdownが面白い</a>
       
       
-        <a class="basic-alignment right" href="/blog/2011/12/20/core-text-api/" title="next Post: Core Text APIを使用した際に起こる行間の問題について">Core Text APIを使用した際に起こる行間の問題について &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2011/12/20/core-text-api/" title="Next Post: Core Text APIを使用した際に起こる行間の問題について">Core Text APIを使用した際に起こる行間の問題について &raquo;</a>
       
     </p>
   </footer>
 </article>
 
 </div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/05/11/tweet-length-count/">ツイートの文字数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/12/20/core-text-api/">Core Text APIを使用した際に起こる行間の問題について</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/21/coteditor/">CotEditorの検索パネル</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/05/09/markdown/">Markdownが面白い</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/03/21/chrome-extension-for-yorufukurou/">Chrome Extension for YoruFukurou</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/aki-null">@aki-null</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'aki-null',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("aki", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/aki" class="twitter-follow-button" data-show-count="true">Follow @aki</a>
+  
+</section>
+
+
+  
+</aside>
 
 
     </div>
