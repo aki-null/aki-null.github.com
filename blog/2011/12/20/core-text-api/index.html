@@ -5,15 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - Nullified Construction</title>
+  <title>Core Text APIを使用した際に起こる行間の問題について - Nullified Construction</title>
   <meta name="author" content="Akihiro Noguchi">
 
   
-  <meta name="description" content="Blog Archive 2012 ツイートの文字数
-May 11 2012 2011 Core Text APIを使用した際に起こる行間の問題について
-Dec 20 2011 CotEditorの検索パネル
-Oct 21 2011 Markdownが面白い
-May 09 2011 Chrome &hellip;">
+  <meta name="description" content="Core Text APIを使用して日本語をレンダリングする際に、行間が英数文字と比べると異様に広くなる問題があります。詳しくは E-WA’s Blog - Tweetbot：日本語テキストの行間について  で説明されています。 CTLineをループして、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -22,7 +18,7 @@ May 09 2011 Chrome &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://aki-null.github.com/blog/archives/">
+  <link rel="canonical" href="http://aki-null.github.com/blog/2011/12/20/core-text-api/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -67,140 +63,84 @@ May 09 2011 Chrome &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">Core Text APIを使用した際に起こる行間の問題について</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-20T00:00:00+11:00" pubdate data-updated="true">Dec 20<span>th</span>, 2011</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p>Core Text APIを使用して日本語をレンダリングする際に、行間が英数文字と比べると異様に広くなる問題があります。詳しくは <a href="http://ewa4618.vjck.com/2011/07/05/tweetbot%EF%BC%9A%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%81%AE%E8%A1%8C%E9%96%93%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6/">E-WA’s Blog - Tweetbot：日本語テキストの行間について</a>  で説明されています。</p>
 
-  
-  <h2>2012</h2>
+<p>CTLineをループして、Y座標をCTFramesetterに頼らず自力で指定し、CTLineDrawで一行ごと描画することでこの問題を回避できます。NSLayoutManagerを使用して英数字のみを描画した際に使用される行の高さを取得しています。</p>
 
-<article>
-  
-<h1><a href="/blog/2012/05/11/">ツイートの文字数</a></h1>
-<time datetime="2012-05-11T00:00:00+10:00" pubdate><span class='month'>May</span> <span class='day'>11</span> <span class='year'>2012</span></time>
-
-
-</article>
-
-
-
-  
-  <h2>2011</h2>
-
-<article>
-  
-<h1><a href="/blog/2011/12/20/core-text-api/">Core Text APIを使用した際に起こる行間の問題について</a></h1>
-<time datetime="2011-12-20T00:00:00+11:00" pubdate><span class='month'>Dec</span> <span class='day'>20</span> <span class='year'>2011</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/10/21/coteditor/">CotEditorの検索パネル</a></h1>
-<time datetime="2011-10-21T00:00:00+11:00" pubdate><span class='month'>Oct</span> <span class='day'>21</span> <span class='year'>2011</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/05/09/markdown/">Markdownが面白い</a></h1>
-<time datetime="2011-05-09T00:00:00+10:00" pubdate><span class='month'>May</span> <span class='day'>09</span> <span class='year'>2011</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/03/21/chrome-extension-for-yorufukurou/">Chrome Extension for YoruFukurou</a></h1>
-<time datetime="2011-03-21T00:00:00+11:00" pubdate><span class='month'>Mar</span> <span class='day'>21</span> <span class='year'>2011</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/02/01/url-scanning/">URL Scanning</a></h1>
-<time datetime="2011-02-01T00:00:00+11:00" pubdate><span class='month'>Feb</span> <span class='day'>01</span> <span class='year'>2011</span></time>
-
-
-</article>
-
-
-
-  
-  <h2>2010</h2>
-
-<article>
-  
-<h1><a href="/blog/2010/01/19/regexkit-on-snow-leopard/">RegexKit on Snow Leopard</a></h1>
-<time datetime="2010-01-19T00:00:00+11:00" pubdate><span class='month'>Jan</span> <span class='day'>19</span> <span class='year'>2010</span></time>
-
-
-</article>
-
-
-
-  
-  <h2>2009</h2>
-
-<article>
-  
-<h1><a href="/blog/2009/10/14/grand-central-dispatch-part-2/">Grand Central Dispatch (Part 2)</a></h1>
-<time datetime="2009-10-14T00:00:00+11:00" pubdate><span class='month'>Oct</span> <span class='day'>14</span> <span class='year'>2009</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2009/10/08/memory-management-issues-with-gcd/">Memory Management Issues with GCD</a></h1>
-<time datetime="2009-10-08T00:00:00+11:00" pubdate><span class='month'>Oct</span> <span class='day'>08</span> <span class='year'>2009</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2009/10/06/fast-and-thread-safe-singleton-for-objective-c/">Fast and Thread-safe Singleton for Objective-C</a></h1>
-<time datetime="2009-10-06T00:00:00+11:00" pubdate><span class='month'>Oct</span> <span class='day'>06</span> <span class='year'>2009</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2009/09/30/grand-central-dispatch-part-1/">Grand Central Dispatch (Part 1)</a></h1>
-<time datetime="2009-09-30T00:00:00+10:00" pubdate><span class='month'>Sep</span> <span class='day'>30</span> <span class='year'>2009</span></time>
-
-
-</article>
-
+<p>コードは <a href="https://gist.github.com/1497649"></a> <a href="https://gist.github.com/1497649">https://gist.github.com/1497649</a>  で見ることが出来ます。</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Akihiro Noguchi</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-20T00:00:00+11:00" pubdate data-updated="true">Dec 20<span>th</span>, 2011</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://aki-null.github.com/blog/2011/12/20/core-text-api/" data-via="aki" data-counturl="http://aki-null.github.com/blog/2011/12/20/core-text-api/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/10/21/coteditor/" title="Previous Post: CotEditorの検索パネル">&laquo; CotEditorの検索パネル</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/05/11/" title="Next Post: ツイートの文字数">ツイートの文字数 &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
 
 </div>

@@ -5,15 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - Nullified Construction</title>
+  <title>Markdownが面白い - Nullified Construction</title>
   <meta name="author" content="Akihiro Noguchi">
 
   
-  <meta name="description" content="Blog Archive 2012 ツイートの文字数
-May 11 2012 2011 Core Text APIを使用した際に起こる行間の問題について
-Dec 20 2011 CotEditorの検索パネル
-Oct 21 2011 Markdownが面白い
-May 09 2011 Chrome &hellip;">
+  <meta name="description" content="最近Markdown の手軽さを知って、良い編集ソフトが無いか調べたけれど、専用のエディタは無いみたいなので自分で作ろうと思った。ちなみにTextMateならMarkdownのバンドルがあるので、わざわざ専用アプリを作るのは車輪の再発明かもしれないけれど、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -22,7 +18,7 @@ May 09 2011 Chrome &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://aki-null.github.com/blog/archives/">
+  <link rel="canonical" href="http://aki-null.github.com/blog/2011/05/09/markdown/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -67,140 +63,94 @@ May 09 2011 Chrome &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">Markdownが面白い</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-05-09T00:00:00+10:00" pubdate data-updated="true">May 9<span>th</span>, 2011</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p>最近<a href="http://daringfireball.net/projects/markdown/">Markdown</a> の手軽さを知って、良い編集ソフトが無いか調べたけれど、専用のエディタは無いみたいなので自分で作ろうと思った。ちなみにTextMateならMarkdownのバンドルがあるので、わざわざ専用アプリを作るのは車輪の再発明かもしれないけれど、リアルタイムにアウトプットを表示させたかったので仕方がない。アプリのデザインを構想して、実際アプリを作ろうと思ってから、もう一度自分がしようとしていることを他の人がしていないか確認したら、Githubで発見した。</p>
 
-  
-  <h2>2012</h2>
+<p><a href="https://github.com/rentzsch/markdownlive">MarkdownLive</a> という名前のアプリで、何故かバイナリは配布されていない。おそらくはじめに探したときに見つからなかったのはこれが原因だろう。とりあえず<code>git clone</code>してビルドしてみた。自分が構想していたアプリと全く同じだったのでモチベーションが削がれた感じだったのだが、誰でも考えそうなアイデアなので仕方がない。しかし使ってみると色々改善点が浮かんできたので、早速色々挙動を変更したり設定を追加してみた。とりあえず今日までの変更点はこんな感じ。
+- プレビューペインでURLをクリックしたときに、デフォルトブラウザで開く
+- 編集ペインで日本語を入力したときに行の高さが変わるMacの変な挙動の回避
+- 印刷に対応(誰が印刷向けの書類をMarkdownで作成するのか、という疑問もあるけれどとりあえず実装)
+- フォント・色の変更機能
+- リッチテキストメニューを全て排除
+- CSSのバグを修正</p>
 
-<article>
-  
-<h1><a href="/blog/2012/05/11/">ツイートの文字数</a></h1>
-<time datetime="2012-05-11T00:00:00+10:00" pubdate><span class='month'>May</span> <span class='day'>11</span> <span class='year'>2012</span></time>
+<p>その他にも小さな変更点はあるけど、大まかな変更点はこれくらい。</p>
 
+<p>![http://media.tumblr.com/tumblr_lz5bhsEbD11qzbi3l.png]</p>
 
-</article>
-
-
-
-  
-  <h2>2011</h2>
-
-<article>
-  
-<h1><a href="/blog/2011/12/20/core-text-api/">Core Text APIを使用した際に起こる行間の問題について</a></h1>
-<time datetime="2011-12-20T00:00:00+11:00" pubdate><span class='month'>Dec</span> <span class='day'>20</span> <span class='year'>2011</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/10/21/coteditor/">CotEditorの検索パネル</a></h1>
-<time datetime="2011-10-21T00:00:00+11:00" pubdate><span class='month'>Oct</span> <span class='day'>21</span> <span class='year'>2011</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/05/09/markdown/">Markdownが面白い</a></h1>
-<time datetime="2011-05-09T00:00:00+10:00" pubdate><span class='month'>May</span> <span class='day'>09</span> <span class='year'>2011</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/03/21/chrome-extension-for-yorufukurou/">Chrome Extension for YoruFukurou</a></h1>
-<time datetime="2011-03-21T00:00:00+11:00" pubdate><span class='month'>Mar</span> <span class='day'>21</span> <span class='year'>2011</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2011/02/01/url-scanning/">URL Scanning</a></h1>
-<time datetime="2011-02-01T00:00:00+11:00" pubdate><span class='month'>Feb</span> <span class='day'>01</span> <span class='year'>2011</span></time>
-
-
-</article>
-
-
-
-  
-  <h2>2010</h2>
-
-<article>
-  
-<h1><a href="/blog/2010/01/19/regexkit-on-snow-leopard/">RegexKit on Snow Leopard</a></h1>
-<time datetime="2010-01-19T00:00:00+11:00" pubdate><span class='month'>Jan</span> <span class='day'>19</span> <span class='year'>2010</span></time>
-
-
-</article>
-
-
-
-  
-  <h2>2009</h2>
-
-<article>
-  
-<h1><a href="/blog/2009/10/14/grand-central-dispatch-part-2/">Grand Central Dispatch (Part 2)</a></h1>
-<time datetime="2009-10-14T00:00:00+11:00" pubdate><span class='month'>Oct</span> <span class='day'>14</span> <span class='year'>2009</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2009/10/08/memory-management-issues-with-gcd/">Memory Management Issues with GCD</a></h1>
-<time datetime="2009-10-08T00:00:00+11:00" pubdate><span class='month'>Oct</span> <span class='day'>08</span> <span class='year'>2009</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2009/10/06/fast-and-thread-safe-singleton-for-objective-c/">Fast and Thread-safe Singleton for Objective-C</a></h1>
-<time datetime="2009-10-06T00:00:00+11:00" pubdate><span class='month'>Oct</span> <span class='day'>06</span> <span class='year'>2009</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2009/09/30/grand-central-dispatch-part-1/">Grand Central Dispatch (Part 1)</a></h1>
-<time datetime="2009-09-30T00:00:00+10:00" pubdate><span class='month'>Sep</span> <span class='day'>30</span> <span class='year'>2009</span></time>
-
-
-</article>
-
+<p>アプリを使ってみたかったり、コードをいじりたい人は<a href="https://github.com/aki-null/markdownlive">ここ</a> からフォーク出来ます。バイナリはアップロードしていないので自分でビルドして下さい。</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Akihiro Noguchi</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-05-09T00:00:00+10:00" pubdate data-updated="true">May 9<span>th</span>, 2011</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://aki-null.github.com/blog/2011/05/09/markdown/" data-via="aki" data-counturl="http://aki-null.github.com/blog/2011/05/09/markdown/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/03/21/chrome-extension-for-yorufukurou/" title="Previous Post: Chrome Extension for YoruFukurou">&laquo; Chrome Extension for YoruFukurou</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/10/21/coteditor/" title="Next Post: CotEditorの検索パネル">CotEditorの検索パネル &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
 
 </div>

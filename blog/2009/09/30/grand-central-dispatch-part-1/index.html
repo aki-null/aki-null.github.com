@@ -1,0 +1,290 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Grand Central Dispatch (Part 1) - Nullified Construction</title>
+  <meta name="author" content="Akihiro Noguchi">
+
+  
+  <meta name="description" content="I’ve been working on optimising my Twitter client using Grand Central Dispatch (GCD) recently. Grand Central Dispatch  is an Apple technology to &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://aki-null.github.com/blog/2009/09/30/grand-central-dispatch-part-1/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Nullified Construction" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Nullified Construction</a></h1>
+  
+    <h2>Random stuff I do</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:aki-null.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Grand Central Dispatch (Part 1)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-09-30T00:00:00+10:00" pubdate data-updated="true">Sep 30<span>th</span>, 2009</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I’ve been working on optimising my Twitter client using Grand Central Dispatch (GCD) recently. <a href="http://www.apple.com/macosx/technology/">Grand Central Dispatch</a>  is an Apple technology to optimise application with multicore processor. It was released with Mac OS 10.6 (Snow Leopard).</p>
+
+<p>GCD makes it easier for programmers to perform tasks on different threads to optimise its algorithm performance. There are other interesting usages, which I will probably cover later. The GCD uses the new language feature of Objective-C 2.1 (also available on C and C++), called Blocks. Blocks lets us create closure-like objects to make it easy to execute a block of code parallel to the main thread. Blocks can also be used in C or C++. I’m not going to cover how to write blocks in this post, so it may be good to have a <a href="http://en.wikipedia.org/wiki/Blocks_(C_language_extension">read</a>)  about it if you don’t already know how it works.</p>
+
+<p>The first example I’m going to cover is simple batch processing. It is quite common to batch process data in a loop, but it is usually done on the main thread, which is not desirable for multicore processors.</p>
+
+<p>The following code is a small loop that can be seen in many applications.
+// iterate through all tab items and execute an expensive operation
+for (NSTabViewItem *currentItem in [tabView tabViewItems]) {</p>
+
+<pre><code>[[currentItem identifier] doExpensiveOperation];
+</code></pre>
+
+<p>}</p>
+
+<p>As you can see, this code will only utilise one core, which is not efficient for multicore processors. This is where we can introduce one of the GCD feature. The following code basically replaces the loop with GCD batch processing function.
+// get all tab items
+NSArray *tabItems = [tabView tabViewItems];
+dispatch_apply([tabItems count],</p>
+
+<pre><code>    dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+    ^(size_t index) {
+        NSTabViewItem *currentItem;
+        currentItem = [tabItems objectAtIndex:index];
+        [[currentItem identifier] doExpensiveOperation];
+    });
+</code></pre>
+
+<p>The <em>“dispatch_apply” </em>function is used to batch process a specified block. The first argument specifies the number of loops to execute. In the example’s case, it is the number of tab items.</p>
+
+<p>The second parameter specified the queue to use. Queue in GCD is an object that maintains set of blocks to execute. The actual execution of blocks are done automatically by GCD, so programmer does not need to worry about the execution after scheduling. GCD automatically detects the optimal number of threads to start, so the code does not need to be optimised for different systems.</p>
+
+<p>The third parameter specifies the actual block to execute. In the code above, I’m getting the tab item I need to process from <em>“tabItems”</em> array. The <em>“index”</em> parameter provides the current thread index, starting from 0.</p>
+
+<p>The <em>“dispatch_apply”</em> blocks, so it will wait until the batch process is complete. Batch processing feature of GCD will automatically optimise the code to run optimally on multicore machine. However, you have to be always be careful when using threads. The block you passed in as a parameter can obviously run on different threads at the same time, which can cause a big issue depending on your code. If <em>“doExpensiveOperation”</em> accesses a shared resource, it may cause a serious threading issue. I’m going to cover how semaphore works in GCD to solve this typical problem of threading in the later post.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Akihiro Noguchi</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-09-30T00:00:00+10:00" pubdate data-updated="true">Sep 30<span>th</span>, 2009</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://aki-null.github.com/blog/2009/09/30/grand-central-dispatch-part-1/" data-via="aki" data-counturl="http://aki-null.github.com/blog/2009/09/30/grand-central-dispatch-part-1/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2009/10/06/fast-and-thread-safe-singleton-for-objective-c/" title="Next Post: Fast and Thread-safe Singleton for Objective-C">Fast and Thread-safe Singleton for Objective-C &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/05/11/">ツイートの文字数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/12/20/core-text-api/">Core Text APIを使用した際に起こる行間の問題について</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/21/coteditor/">CotEditorの検索パネル</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/05/09/markdown/">Markdownが面白い</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/03/21/chrome-extension-for-yorufukurou/">Chrome Extension for YoruFukurou</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/aki-null">@aki-null</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'aki-null',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("aki", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/aki" class="twitter-follow-button" data-show-count="true">Follow @aki</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Akihiro Noguchi -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

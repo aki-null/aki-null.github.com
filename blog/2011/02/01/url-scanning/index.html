@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>URL Scanning - Nullified Construction</title>
+  <meta name="author" content="Akihiro Noguchi">
+
+  
+  <meta name="description" content="I have spent significant time trying to scan URLs in a string. The most popular way to do this is to use regular expression. I have been using regex &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://aki-null.github.com/blog/2011/02/01/url-scanning/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Nullified Construction" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Nullified Construction</a></h1>
+  
+    <h2>Random stuff I do</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:aki-null.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">URL Scanning</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-01T00:00:00+11:00" pubdate data-updated="true">Feb 1<span>st</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I have spent significant time trying to scan URLs in a string. The most popular way to do this is to use regular expression.</p>
+
+<p>I have been using regex described <a href="http://www.din.or.jp/~ohzaki/perl.htm#httpURL">here</a>  (Japanese) for my Twitter client <a href="http://sites.google.com/site/yorufukurou/home-en">YoruFukurou</a> . This regular expression was very strict, and followed RFC very well.</p>
+
+<p>However, things are changing on the web. IDN (Internationalized Domain Name) is becoming somewhat popular in Japan, and there are web browsers that do not percent encode URLs copied from its address bar (i.e. Safari). The URL would not be matched by the regular expression above, because it doesn’t expect IDN, or Unicode characters in URL.</p>
+
+<p>Since I was building a Twitter client, it needed to be lenient in the way it parsed URLs. After trying several different regular expressions like <a href="http://daringfireball.net/2010/07/improved_regex_for_matching_urls">this one</a>  [Daring Fireball], I have realised that there might be simpler and more effective way of doing this. I have spent 10 seconds to come up with the following regular expression.</p>
+
+<p><code>https?://[^\s]*</code></p>
+
+<p>It actually worked very well, because most of people would insert an empty character after an URL. This regular expression matched URLs containing Unicode characters properly.</p>
+
+<p>After using this regular expression to scan for URLs in my Twitter client, I have found one case where it would not work properly. In Twitter, people tend to use brackets around URLs instead of empty characters.</p>
+
+<p>e.g.<code>[http://ja.wikipedia.org/wiki/正規表現]</code></p>
+
+<p>The regular expression I have proposed previously would match the URL with the trailing square bracket character. This was not a desirable behaviour.</p>
+
+<p>The following things must be done to parse this properly.
+- Detect the starting bracket character
+- Detect the end bracket character
+- Check whether the end bracket character matches the starting bracket character</p>
+
+<p>After some experiments, I have realised that regular expression is not powerful enough to handle this case properly. (It may be possible, but it is likely to end up with extremely complex regular expression, which can cause performance issues)</p>
+
+<p>My solution was to write my own URL scanner. I have spent about two days writing the initial version of the scanner. The new URL scanner has successfully solved the issue with brackets. The scanner is capable of finding URLs in the following scenarios.</p>
+
+<p><code>String: [https://テスト).com]URL: https://テスト).com</code></p>
+
+<p><code>String: ([http://en.wikipedia.org/wiki/Perl_](http://en.wikipedia.org/wiki/Perl_) (disambiguation))URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)</code></p>
+
+<p>As you can see, the URL encapsulated by brackets are scanned properly. I have not encountered an issue after changing the URL scanner in my Twitter client to this new scanner.</p>
+
+<p>The code can be found in my <a href="https://github.com/aki-null/URLScanner">GitHub repository</a> . The library is licensed under BSD license, so feel free to use it in your own application.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Akihiro Noguchi</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-01T00:00:00+11:00" pubdate data-updated="true">Feb 1<span>st</span>, 2011</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://aki-null.github.com/blog/2011/02/01/url-scanning/" data-via="aki" data-counturl="http://aki-null.github.com/blog/2011/02/01/url-scanning/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2010/01/19/regexkit-on-snow-leopard/" title="Previous Post: RegexKit on Snow Leopard">&laquo; RegexKit on Snow Leopard</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/03/21/chrome-extension-for-yorufukurou/" title="Next Post: Chrome Extension for YoruFukurou">Chrome Extension for YoruFukurou &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/05/11/">ツイートの文字数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/12/20/core-text-api/">Core Text APIを使用した際に起こる行間の問題について</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/21/coteditor/">CotEditorの検索パネル</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/05/09/markdown/">Markdownが面白い</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/03/21/chrome-extension-for-yorufukurou/">Chrome Extension for YoruFukurou</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/aki-null">@aki-null</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'aki-null',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("aki", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/aki" class="twitter-follow-button" data-show-count="true">Follow @aki</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Akihiro Noguchi -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -9,7 +9,7 @@
   <meta name="author" content="Akihiro Noguchi">
 
   
-  <meta name="description" content="Blog Archives Recent Posts GitHub Repos Status updating&#8230; @aki-null on GitHub $.domReady(function(){ if (!window.jXHR){ var jxhr = document. &hellip;">
+  <meta name="description" content="Twitter には1つの投稿につき140文字までしか送信できないルールがある。普通に考えると、それぞれのプログラミング言語の API を使って普通に文字数を数えれば思うだろう。しかし、この実装が簡単に見える機能にはいろいろな罠が潜んでいる。## URL まず、Twitter &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,7 +65,627 @@
       <div class="blog-index">
   
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/11/">ツイートの文字数</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-11T00:00:00+10:00" pubdate data-updated="true">May 11<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Twitter には1つの投稿につき140文字までしか送信できないルールがある。普通に考えると、それぞれのプログラミング言語の API を使って普通に文字数を数えれば思うだろう。しかし、この実装が簡単に見える機能にはいろいろな罠が潜んでいる。## URL</p>
+
+<p>まず、Twitter に投稿するツイートに含まれるリンクはすべて t.co という Twitter 公式の URL 短縮サービスによって短縮されてしまう。ここで厄介になるのだが、なんと「140文字まで」という制限は、URL を短縮したあとの文字数に適用される、という仕様である。つまり、Twitter 内部の URL 認識する使用を完全に再現しないと、正確に最終的な文字数を数えることは出来ない。更に、t.co で短縮化された URL の文字数は静的ではないので、<a href="https://dev.twitter.com/docs/api/1/get/help/configuration">test/configuration</a> API から定期的に取得して記録しておく必要がある。</p>
+
+<p>次に、https で始まる URL が t.co によって短縮された場合、t.co 化された URL も https で始まるようになる。なので、先程の API から両方の URL の長さの値が取得することができる。この記事を書いている時点では通常の URL の場合20文字、https で始まる URL の場合は21文字となっている。</p>
+
+<p>上のルールを適用すると、</p>
+
+<p><code>My website![http://aki-null.net](http://aki-null.net)</code></p>
+
+<p>という文字列の文字数は、この記事を書いている現時点では32文字ということになる。## Unicode</p>
+
+<p>まず、Twitter のルールに従って文字数を数えるためには、Unicode 正規化を行わなければならない。Twitter は文字数を数えるときは正規化形式C (Normalization Form Canonical Composition) を使用することを指定している。使用している言語・API によって変換する方法は違うが、Objective-C の場合、<code>NSString</code>クラスに<code>- (NSString *)precomposedStringWithCanonicalMapping</code>という API が用意されている。</p>
+
+<p>更に、Twitter は文字を数えるとき、バイト数ではなく、最終的な文字数を数える。つまり、使用している言語、API によっては、正確な文字数をそのまま取得することはできない場合がある。例えば Objective-C を Mac や iPhone で使っている場合、通常文字列を扱うには<code>NSString</code>クラスを使用する。<code>NSString</code>は内部的に文字を格納するために UTF-16 を採用している。そして、<code>NSString</code>の<code>- (NSUInteger)length</code> という API はサロゲートペアを考慮せずに文字数を計算するので、3バイトから4バイトの文字は2文字として数えられてしまう。Objective-C を使っている場合、<code>CFStringIsSurrogateHighCharacter</code>と<code>CFStringIsSurrogateLowCharacter</code>を使うことで、指定した文字がサロゲートペアの一部であるかを確認することができる。## まとめ</p>
+
+<p>正確に文字数を数えるのは非常に難しい。そこで Twitter はいくつか URL を認識したり、文字数を数えるライブラリを複数の言語向けに公開している。
+- Objective-C:<a href="https://github.com/twitter/twitter-text-objc"></a> <a href="https://github.com/twitter/twitter-text-objc">https://github.com/twitter/twitter-text-objc</a>
+- Java:<a href="https://github.com/twitter/twitter-text-java"></a> <a href="https://github.com/twitter/twitter-text-java">https://github.com/twitter/twitter-text-java</a>
+- Javascript:<a href="https://github.com/twitter/twitter-text-js"></a> <a href="https://github.com/twitter/twitter-text-js">https://github.com/twitter/twitter-text-js</a>
+- Ruby:<a href="https://github.com/twitter/twitter-text-rb"></a> <a href="https://github.com/twitter/twitter-text-rb">https://github.com/twitter/twitter-text-rb</a></p>
+
+<p>自分で正確な URL 認識を実装したい場合は、<a href="https://github.com/twitter/twitter-text-conformance">twitter-text-comformance</a> リポジトリにあるテストデータをユニットテストに使用すると良いだろう。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/12/20/core-text-api/">Core Text APIを使用した際に起こる行間の問題について</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-20T00:00:00+11:00" pubdate data-updated="true">Dec 20<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Core Text APIを使用して日本語をレンダリングする際に、行間が英数文字と比べると異様に広くなる問題があります。詳しくは <a href="http://ewa4618.vjck.com/2011/07/05/tweetbot%EF%BC%9A%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%81%AE%E8%A1%8C%E9%96%93%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6/">E-WA’s Blog - Tweetbot：日本語テキストの行間について</a>  で説明されています。</p>
+
+<p>CTLineをループして、Y座標をCTFramesetterに頼らず自力で指定し、CTLineDrawで一行ごと描画することでこの問題を回避できます。NSLayoutManagerを使用して英数字のみを描画した際に使用される行の高さを取得しています。</p>
+
+<p>コードは <a href="https://gist.github.com/1497649"></a> <a href="https://gist.github.com/1497649">https://gist.github.com/1497649</a>  で見ることが出来ます。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/10/21/coteditor/">CotEditorの検索パネル</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-21T00:00:00+11:00" pubdate data-updated="true">Oct 21<span>st</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>CotEditorの検索パネルでReturnキーを押すとパネルが閉じてしまうので、その挙動を変えてみました。
+実際はOgreKitのframeworkで検索パネルが実装されているので、CotEditor自体には手を加える必要はありませんでした。</p>
+
+<p>SDKは10.6をターゲットにしてビルドしてます。PPCのバイナリは含まれていません。</p>
+
+<p><a href="http://blog.aki-null.net/wp-content/uploads/2011/05/OgreKit_Find_Custom.zip">ここから</a> 手を加えたOgreKit.frameworkをダウンロードして、CotEditor.app/Contents/Frameworks/OgreKit.framework にコピーするだけ。Returnと一緒にShiftキーを押すと、以前と同じように検索後にパネルが閉じます。</p>
+
+<p>追記: CotEditor本家に変更点が反映されたので、次のCotEditorのリリースではこの挙動がデフォルトになると思います。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/05/09/markdown/">Markdownが面白い</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-05-09T00:00:00+10:00" pubdate data-updated="true">May 9<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近<a href="http://daringfireball.net/projects/markdown/">Markdown</a> の手軽さを知って、良い編集ソフトが無いか調べたけれど、専用のエディタは無いみたいなので自分で作ろうと思った。ちなみにTextMateならMarkdownのバンドルがあるので、わざわざ専用アプリを作るのは車輪の再発明かもしれないけれど、リアルタイムにアウトプットを表示させたかったので仕方がない。アプリのデザインを構想して、実際アプリを作ろうと思ってから、もう一度自分がしようとしていることを他の人がしていないか確認したら、Githubで発見した。</p>
+
+<p><a href="https://github.com/rentzsch/markdownlive">MarkdownLive</a> という名前のアプリで、何故かバイナリは配布されていない。おそらくはじめに探したときに見つからなかったのはこれが原因だろう。とりあえず<code>git clone</code>してビルドしてみた。自分が構想していたアプリと全く同じだったのでモチベーションが削がれた感じだったのだが、誰でも考えそうなアイデアなので仕方がない。しかし使ってみると色々改善点が浮かんできたので、早速色々挙動を変更したり設定を追加してみた。とりあえず今日までの変更点はこんな感じ。
+- プレビューペインでURLをクリックしたときに、デフォルトブラウザで開く
+- 編集ペインで日本語を入力したときに行の高さが変わるMacの変な挙動の回避
+- 印刷に対応(誰が印刷向けの書類をMarkdownで作成するのか、という疑問もあるけれどとりあえず実装)
+- フォント・色の変更機能
+- リッチテキストメニューを全て排除
+- CSSのバグを修正</p>
+
+<p>その他にも小さな変更点はあるけど、大まかな変更点はこれくらい。</p>
+
+<p>![http://media.tumblr.com/tumblr_lz5bhsEbD11qzbi3l.png]</p>
+
+<p>アプリを使ってみたかったり、コードをいじりたい人は<a href="https://github.com/aki-null/markdownlive">ここ</a> からフォーク出来ます。バイナリはアップロードしていないので自分でビルドして下さい。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/03/21/chrome-extension-for-yorufukurou/">Chrome Extension for YoruFukurou</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-21T00:00:00+11:00" pubdate data-updated="true">Mar 21<span>st</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Paste URL to YoruFukurou extension for Chrome.</p>
+
+<p><a href="http://aki-null.net/yf/yf_paste.crx">Download</a>  </p>
+
+<p>Updated (23/07/2011): Updated the icon and fixed the compatibility issue with new version of YF.Updated (15/12/2011): Updated the extension to work with Chrome 16</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2011/02/01/url-scanning/">URL Scanning</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-01T00:00:00+11:00" pubdate data-updated="true">Feb 1<span>st</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I have spent significant time trying to scan URLs in a string. The most popular way to do this is to use regular expression.</p>
+
+<p>I have been using regex described <a href="http://www.din.or.jp/~ohzaki/perl.htm#httpURL">here</a>  (Japanese) for my Twitter client <a href="http://sites.google.com/site/yorufukurou/home-en">YoruFukurou</a> . This regular expression was very strict, and followed RFC very well.</p>
+
+<p>However, things are changing on the web. IDN (Internationalized Domain Name) is becoming somewhat popular in Japan, and there are web browsers that do not percent encode URLs copied from its address bar (i.e. Safari). The URL would not be matched by the regular expression above, because it doesn’t expect IDN, or Unicode characters in URL.</p>
+
+<p>Since I was building a Twitter client, it needed to be lenient in the way it parsed URLs. After trying several different regular expressions like <a href="http://daringfireball.net/2010/07/improved_regex_for_matching_urls">this one</a>  [Daring Fireball], I have realised that there might be simpler and more effective way of doing this. I have spent 10 seconds to come up with the following regular expression.</p>
+
+<p><code>https?://[^\s]*</code></p>
+
+<p>It actually worked very well, because most of people would insert an empty character after an URL. This regular expression matched URLs containing Unicode characters properly.</p>
+
+<p>After using this regular expression to scan for URLs in my Twitter client, I have found one case where it would not work properly. In Twitter, people tend to use brackets around URLs instead of empty characters.</p>
+
+<p>e.g.<code>[http://ja.wikipedia.org/wiki/正規表現]</code></p>
+
+<p>The regular expression I have proposed previously would match the URL with the trailing square bracket character. This was not a desirable behaviour.</p>
+
+<p>The following things must be done to parse this properly.
+- Detect the starting bracket character
+- Detect the end bracket character
+- Check whether the end bracket character matches the starting bracket character</p>
+
+<p>After some experiments, I have realised that regular expression is not powerful enough to handle this case properly. (It may be possible, but it is likely to end up with extremely complex regular expression, which can cause performance issues)</p>
+
+<p>My solution was to write my own URL scanner. I have spent about two days writing the initial version of the scanner. The new URL scanner has successfully solved the issue with brackets. The scanner is capable of finding URLs in the following scenarios.</p>
+
+<p><code>String: [https://テスト).com]URL: https://テスト).com</code></p>
+
+<p><code>String: ([http://en.wikipedia.org/wiki/Perl_](http://en.wikipedia.org/wiki/Perl_) (disambiguation))URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)</code></p>
+
+<p>As you can see, the URL encapsulated by brackets are scanned properly. I have not encountered an issue after changing the URL scanner in my Twitter client to this new scanner.</p>
+
+<p>The code can be found in my <a href="https://github.com/aki-null/URLScanner">GitHub repository</a> . The library is licensed under BSD license, so feel free to use it in your own application.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/01/19/regexkit-on-snow-leopard/">RegexKit on Snow Leopard</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-01-19T00:00:00+11:00" pubdate data-updated="true">Jan 19<span>th</span>, 2010</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I have been using RegexKit for the Twitter client called <a href="http://sites.google.com/site/yorufukurou/">YoruFukurou</a>  for quite some time now. The framework was essential for the application, because the primary functionality of the app heavily involved the use of regular expressions. I tried other libraries, but only RegexKit satisfied my requirements.</p>
+
+<p>RegexKit seemed to perform just fine on Snow Leopard, but I found a significant bug. The RegexKit was advertised to support Garbage Collection that was introduced in Leopard, but it seemed to crash as soon as RegexKit API was called on Snow Leopard. After some research, I found out that only one line of code was required to be changed to fix the issue. The bug was being tracked on their <a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2876858&amp;group_id=204582&amp;atid=990188">official bug tracker</a> , but the code maintainer seemed to be inactive. I tried to build the framework after applying the fix, but the build failed miserably on Snow Leopard.</p>
+
+<p>Unfortunately, I had to install Leopard on my external HDD to build the framework, because I had no computers running Leopard. You can download the fixed RegexKit framework from <a href="http://aki-null.net/misc/RegexKit.zip">here</a> , so nobody needs to go through the pain of setting up Leopard system to fix the bug.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2009/10/14/grand-central-dispatch-part-2/">Grand Central Dispatch (Part 2)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-10-14T00:00:00+11:00" pubdate data-updated="true">Oct 14<span>th</span>, 2009</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The Grand Central Dispatch (GCD) can be used to optimise programs for multi-core processors. However, the usual issue with threading still exists in GCD (GCD is not a magic). I would like to cover how to use semaphore to make a program thread-safe.</p>
+
+<p>The most common issues you may face when you introduce threading into your program are accesses to shared resources. An example of the issue is presented in the code below.
+int main (int argc, const char * argv[]) {
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];</p>
+
+<p>   NSMutableSet *items = [NSMutableArray array];</p>
+
+<p>   dispatch_queue_t queue =</p>
+
+<pre><code>  dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+</code></pre>
+
+<p>   dispatch_apply(50, queue,</p>
+
+<pre><code>     ^(size_t index) {
+        for (int i = 0; i &lt; 500; i++) {
+           [items addObject:@"hi"];
+        }
+     });
+</code></pre>
+
+<p>   NSLog(@&#8221;%i&#8221;, [items count]);</p>
+
+<p>   [pool drain];
+   return 0;
+}</p>
+
+<p>The program above simply tries to add an item to the shared resource (NSMutableSet) from multiple threads. If you try to run this program, it will probably crash. It is because NSMutableSet is NOT thread-safe (actually, all collection classes are not thread-safe). To prevent this issue, we could use the traditional <em>@synchronized</em> block to ensure thread-safety (example below).
+int main (int argc, const char * argv[]) {
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];</p>
+
+<p>   NSMutableSet *items = [NSMutableArray array];</p>
+
+<p>   dispatch_queue_t queue =</p>
+
+<pre><code>  dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+</code></pre>
+
+<p>   dispatch_apply(50, queue,</p>
+
+<pre><code>     ^(size_t index) {
+        for (int i = 0; i &lt; 500; i++) {
+           @synchronized (items) {
+              [items addObject:@"hi"];
+           }
+        }
+     });
+</code></pre>
+
+<p>   NSLog(@&#8221;%i&#8221;, [items count]);</p>
+
+<p>   [pool drain];
+   return 0;
+}</p>
+
+<p>Well, it runs. But you must remember that locks are very expensive. In the case of the program above, it will lock 500 times per block, which is extremely inefficient. Apple has provided optimised version of semaphore for GCD (dispatch semaphore). The traditional semaphores always require calling down to the kernel to test the semaphore, but the dispatch semaphore tests semaphore in user space, and only traps into the kernel only when the test fails and needs to block the thread. The following code demonstrates the usage of the dispatch semaphore.
+int main (int argc, const char * argv[]) {
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];</p>
+
+<p>   NSMutableSet *items = [NSMutableArray array];</p>
+
+<p>   dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
+   dispatch_queue_t queue =</p>
+
+<pre><code>  dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+</code></pre>
+
+<p>   dispatch_apply(50, queue,</p>
+
+<pre><code>     ^(size_t index) {
+        for (int i = 0; i &lt; 500; i++) {
+           dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);
+           [items addObject:@"hi"];
+           dispatch_semaphore_signal(itemLock);
+        }
+     });
+</code></pre>
+
+<p>   dispatch_release(itemLock);</p>
+
+<p>   NSLog(@&#8221;%i&#8221;, [items count]);</p>
+
+<p>   [pool drain];
+   return 0;
+}</p>
+
+<p>“<em>dispatch_semaphore_create</em>” function is used to create a dispatch semaphore. The parameter specifies the starting value for the semaphore. To wait for the resource to be available, you have to use “<em>dispatch_semaphore_wait</em>”. Use “<em>dispatch_semaphore_signal</em>” function to signal the semaphore. Finally, “<em>dispatch_release</em>” function is called to release the memory allocated for the semaphore. The semaphore is not managed by the reference counter, so you must release it manually.</p>
+
+<p>This is the basic usage of dispatch semaphore. It also has many other usages, such as managing program flow of threaded application.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2009/10/08/memory-management-issues-with-gcd/">Memory Management Issues With GCD</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-10-08T00:00:00+11:00" pubdate data-updated="true">Oct 8<span>th</span>, 2009</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I have been using GCD quite extensively on my desktop application, and have noticed severe memory management issue. The battle started when I have realised a strange memory usage increase when the application was ran overnight without any user interaction. The memory usage of the application was about 70MB before I went to bed. When I got up, the memory usage was on 400MB. This was unexpected, because I was always making sure that there are no memory leaks in my application using Instruments.</p>
+
+<p>I was trying to come up with a valid explanation of this issue to fix the bug. I have profiled the objects in the memory using the command line tool “heap” that was apparently introduced on Snow Leopard. However, I could not find significant issue after running it for an hour.</p>
+
+<p>I could not figure out what was wrong for the entire day, so I restarted the program before I went to bed last night, and profiled the objects in the memory. When I got up this morning, the memory usage was on 400MB as expected. I ran the profiler again, and it told me that there were insane amount of objects that were not being freed. This was unusual, because Instruments told me that there were no leaks. I have fiddled with the application for a while, and ran the profiler again. I was extremely surprised when I saw the new report generated by the heap tool. All objects that were not being freed were all gone! At this point, I’ve realised that this was not happening to the build that did not have GCD optimisation.</p>
+
+<p>After a while, I found out that it was indeed caused by GCD optimisation code I wrote. I ran some tests, and realised that objects that were allocated in Blocks dispatched to main queue are not being released UNTIL something triggers the NSAutoreleasePool to drain. This means the auto-released objects allocated inside a Block that was dispatched to the main queue are not released until a user interaction occurs.
+dispatch_async(dispatch_get_global_queue(0, 0), ^{</p>
+
+<pre><code>// do something expensive
+dispatch_async(dispatch_get_main_queue(), ^{
+    // All auto-released objects allocated
+    // in here are not released until the
+    // next event loop fires.
+});
+</code></pre>
+
+<p>});</p>
+
+<p>The above code should explain what was going on. I ran several tests to validate that my hypothesis was correct. To fix the problem, I have changed the above code to the following code.
+dispatch_async(dispatch_get_global_queue(0, 0), ^{</p>
+
+<pre><code>// do something expensive
+dispatch_async(dispatch_get_main_queue(), ^{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    // all auto-released objects are released when
+    // this block finishes!
+    [pool drain];
+});
+</code></pre>
+
+<p>});</p>
+
+<p>After placing the NSAutoreleasePool inside a block dispatched to the main queue, everything was back to normal.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2009/10/06/fast-and-thread-safe-singleton-for-objective-c/">Fast and Thread-safe Singleton for Objective-C</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-10-06T00:00:00+11:00" pubdate data-updated="true">Oct 6<span>th</span>, 2009</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I have seen various implementations of Singleton pattern in Objective-C in the past. The most common template I have seen is the following.
+static MyClass *instance = nil;</p>
+
+<ul>
+<li>(MyClass *)sharedInstance {
+  @synchronized(self) {
+
+<pre><code>  if (instance == nil) {
+      instance = [[self alloc] init];
+  }
+</code></pre>
+
+<p>  }
+  return instance;
+}</p></li>
+</ul>
+
+
+<p>As you can see, it locks the method using self. The issue with this code is that it can get very slow if this method is called hundreds of times, because the code to instantiate the shared instance must be thread-safe. I was researching for a better way to make this faster, then I found <a href="http://eschatologist.net/blog/?p=178">this article</a> . The comment section of the article details the use of “Method Swizzling” to replace the method to access the shared instance with more optimised code (simply returning the instance without a check). Method swizzling allows us to modify the mapping from a selector to an implementation.</p>
+
+<p>I have tried to use the code provided, but it failed to work. I have done some digging around, and I found an article on <a href="http://www.cocoadev.com/index.pl?MethodSwizzling">CocoaDev</a>  detailing the swizzling techniques. I have created a category of NSObject using one of the implementation, and modified my Singleton code to the following.
+static MyClass *instance = nil;</p>
+
+<ul>
+<li><p>(MyClass *)sharedInstance {
+  @synchronized(self) {</p>
+
+<pre><code>  if (!instance) {
+      instance = [[MyClass alloc] init];
+      OSMemoryBarrier();
+      [self swizzleClassMethod:@selector(sharedInstance)
+           withClassMethod:@selector(sharedInstance2)];
+  }
+</code></pre>
+
+<p>  }
+  return instance;
+}</p></li>
+<li><p>(MyClass *)sharedInstance2 {
+  return instance;
+}</p></li>
+</ul>
+
+
+<p>The above code worked very well. The performance of initialisation would be much slower than the original implementation, but it would be extremely fast after the first initialisation.</p>
+
+<p>Edit: This should be faster than double-checked locking, but I have not tested the performance.</p>
+
+<p>Edit2: I did need the memory barrier after all. The code has been updated.</p>
+</div>
+  
+  
+
+
+    </article>
+  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -76,6 +696,26 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/05/11/">ツイートの文字数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/12/20/core-text-api/">Core Text APIを使用した際に起こる行間の問題について</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/21/coteditor/">CotEditorの検索パネル</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/05/09/markdown/">Markdownが面白い</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/03/21/chrome-extension-for-yorufukurou/">Chrome Extension for YoruFukurou</a>
+      </li>
     
   </ul>
 </section>
