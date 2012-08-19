@@ -92,11 +92,11 @@
 
 <div class="entry-content"><p>I have spent significant time trying to scan URLs in a string. The most popular way to do this is to use regular expression.</p>
 
-<p>I have been using regex described <a href="http://www.din.or.jp/~ohzaki/perl.htm#httpURL">here</a>  (Japanese) for my Twitter client <a href="http://sites.google.com/site/yorufukurou/home-en">YoruFukurou</a> . This regular expression was very strict, and followed RFC very well.</p>
+<p>I have been using regex described <a href="http://www.din.or.jp/~ohzaki/perl.htm#httpURL">here</a> (Japanese) for my Twitter client <a href="http://sites.google.com/site/yorufukurou/home-en">YoruFukurou</a>. This regular expression was very strict, and followed RFC very well.</p>
 
 <p>However, things are changing on the web. IDN (Internationalized Domain Name) is becoming somewhat popular in Japan, and there are web browsers that do not percent encode URLs copied from its address bar (i.e. Safari). The URL would not be matched by the regular expression above, because it doesn’t expect IDN, or Unicode characters in URL.</p>
 
-<p>Since I was building a Twitter client, it needed to be lenient in the way it parsed URLs. After trying several different regular expressions like <a href="http://daringfireball.net/2010/07/improved_regex_for_matching_urls">this one</a>  [Daring Fireball], I have realised that there might be simpler and more effective way of doing this. I have spent 10 seconds to come up with the following regular expression.</p>
+<p>Since I was building a Twitter client, it needed to be lenient in the way it parsed URLs. After trying <a href="http://daringfireball.net/2010/07/improved_regex_for_matching_urls">several different regular expressions</a>, I have realised that there might be simpler and more effective way of doing this. I have spent 10 seconds to come up with the following regular expression.</p>
 
 <p><code>https?://[^\s]*</code></p>
 
@@ -117,13 +117,16 @@
 
 <p>My solution was to write my own URL scanner. I have spent about two days writing the initial version of the scanner. The new URL scanner has successfully solved the issue with brackets. The scanner is capable of finding URLs in the following scenarios.</p>
 
-<p><code>String: [https://テスト).com]URL: https://テスト).com</code></p>
+<pre><code>String: [https://テスト).com]
+URL: https://テスト).com
 
-<p><code>String: ([http://en.wikipedia.org/wiki/Perl_](http://en.wikipedia.org/wiki/Perl_) (disambiguation))URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)</code></p>
+String: (http://en.wikipedia.org/wiki/Perl_(disambiguation))
+URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)
+</code></pre>
 
 <p>As you can see, the URL encapsulated by brackets are scanned properly. I have not encountered an issue after changing the URL scanner in my Twitter client to this new scanner.</p>
 
-<p>The code can be found in my <a href="https://github.com/aki-null/URLScanner">GitHub repository</a> . The library is licensed under BSD license, so feel free to use it in your own application.</p>
+<p>The code can be found in my <a href="https://github.com/aki-null/URLScanner">GitHub repository</a>. The library is licensed under BSD license, so feel free to use it in your own application.</p>
 </div>
 
 
@@ -181,7 +184,7 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2012/05/11/">ツイートの文字数</a>
+        <a href="/blog/2012/05/11/tweet-length-count/">ツイートの文字数</a>
       </li>
     
       <li class="post">

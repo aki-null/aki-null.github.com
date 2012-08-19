@@ -9,7 +9,7 @@
   <meta name="author" content="Akihiro Noguchi">
 
   
-  <meta name="description" content="I’ve been working on optimising my Twitter client using Grand Central Dispatch (GCD) recently. Grand Central Dispatch  is an Apple technology to &hellip;">
+  <meta name="description" content="I’ve been working on optimising my Twitter client using Grand Central Dispatch (GCD) recently. Grand Central Dispatch is an Apple technology to &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -93,32 +93,31 @@
   </header>
 
 
-  <div class="entry-content"><p>I’ve been working on optimising my Twitter client using Grand Central Dispatch (GCD) recently. <a href="http://www.apple.com/macosx/technology/">Grand Central Dispatch</a>  is an Apple technology to optimise application with multicore processor. It was released with Mac OS 10.6 (Snow Leopard).</p>
+  <div class="entry-content"><p>I’ve been working on optimising my Twitter client using Grand Central Dispatch (GCD) recently. <a href="http://www.apple.com/macosx/technology/">Grand Central Dispatch</a> is an Apple technology to optimise application with multicore processor. It was released with Mac OS 10.6 (Snow Leopard).</p>
 
-<p>GCD makes it easier for programmers to perform tasks on different threads to optimise its algorithm performance. There are other interesting usages, which I will probably cover later. The GCD uses the new language feature of Objective-C 2.1 (also available on C and C++), called Blocks. Blocks lets us create closure-like objects to make it easy to execute a block of code parallel to the main thread. Blocks can also be used in C or C++. I’m not going to cover how to write blocks in this post, so it may be good to have a <a href="http://en.wikipedia.org/wiki/Blocks_(C_language_extension">read</a>)  about it if you don’t already know how it works.</p>
+<p>GCD makes it easier for programmers to perform tasks on different threads to optimise its algorithm performance. There are other interesting usages, which I will probably cover later. The GCD uses the new language feature of Objective-C 2.1 (also available on C and C++), called Blocks. Blocks lets us create closure-like objects to make it easy to execute a block of code parallel to the main thread. Blocks can also be used in C or C++. I’m not going to cover how to write blocks in this post, so it may be good to have a <a href="http://en.wikipedia.org/wiki/Blocks_(C_language_extension)">read</a> about it if you don’t already know how it works.</p>
 
 <p>The first example I’m going to cover is simple batch processing. It is quite common to batch process data in a loop, but it is usually done on the main thread, which is not desirable for multicore processors.</p>
 
-<p>The following code is a small loop that can be seen in many applications.
-// iterate through all tab items and execute an expensive operation
-for (NSTabViewItem *currentItem in [tabView tabViewItems]) {</p>
+<p>The following code is a small loop that can be seen in many applications.</p>
 
-<pre><code>[[currentItem identifier] doExpensiveOperation];
+<pre><code>// iterate through all tab items and execute an expensive operation
+for (NSTabViewItem *currentItem in [tabView tabViewItems]) {
+    [[currentItem identifier] doExpensiveOperation];
+}
 </code></pre>
 
-<p>}</p>
+<p>As you can see, this code will only utilise one core, which is not efficient for multicore processors. This is where we can introduce one of the GCD feature. The following code basically replaces the loop with GCD batch processing function.</p>
 
-<p>As you can see, this code will only utilise one core, which is not efficient for multicore processors. This is where we can introduce one of the GCD feature. The following code basically replaces the loop with GCD batch processing function.
-// get all tab items
+<pre><code>// get all tab items
 NSArray *tabItems = [tabView tabViewItems];
-dispatch_apply([tabItems count],</p>
-
-<pre><code>    dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-    ^(size_t index) {
-        NSTabViewItem *currentItem;
-        currentItem = [tabItems objectAtIndex:index];
-        [[currentItem identifier] doExpensiveOperation];
-    });
+dispatch_apply([tabItems count],
+        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+        ^(size_t index) {
+            NSTabViewItem *currentItem;
+            currentItem = [tabItems objectAtIndex:index];
+            [[currentItem identifier] doExpensiveOperation];
+        });
 </code></pre>
 
 <p>The <em>“dispatch_apply” </em>function is used to batch process a specified block. The first argument specifies the number of loops to execute. In the example’s case, it is the number of tab items.</p>
@@ -150,7 +149,7 @@ dispatch_apply([tabItems count],</p>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2012/05/11/">ツイートの文字数</a>
+        <a href="/blog/2012/05/11/tweet-length-count/">ツイートの文字数</a>
       </li>
     
       <li class="post">

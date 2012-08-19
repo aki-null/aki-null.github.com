@@ -4,7 +4,7 @@
   <title><![CDATA[Nullified Construction]]></title>
   <link href="http://aki-null.github.com/atom.xml" rel="self"/>
   <link href="http://aki-null.github.com/"/>
-  <updated>2012-08-19T19:51:26+10:00</updated>
+  <updated>2012-08-19T20:20:42+10:00</updated>
   <id>http://aki-null.github.com/</id>
   <author>
     <name><![CDATA[Akihiro Noguchi]]></name>
@@ -15,10 +15,12 @@
   
   <entry>
     <title type="html"><![CDATA[ツイートの文字数]]></title>
-    <link href="http://aki-null.github.com/blog/2012/05/11/"/>
+    <link href="http://aki-null.github.com/blog/2012/05/11/tweet-length-count/"/>
     <updated>2012-05-11T00:00:00+10:00</updated>
-    <id>http://aki-null.github.com/blog/2012/05/</id>
-    <content type="html"><![CDATA[<p>Twitter には1つの投稿につき140文字までしか送信できないルールがある。普通に考えると、それぞれのプログラミング言語の API を使って普通に文字数を数えれば思うだろう。しかし、この実装が簡単に見える機能にはいろいろな罠が潜んでいる。## URL</p>
+    <id>http://aki-null.github.com/blog/2012/05/11/tweet-length-count</id>
+    <content type="html"><![CDATA[<p>Twitter には1つの投稿につき140文字までしか送信できないルールがある。普通に考えると、それぞれのプログラミング言語の API を使って普通に文字数を数えれば思うだろう。しかし、この実装が簡単に見える機能にはいろいろな罠が潜んでいる。</p>
+
+<h2>URL</h2>
 
 <p>まず、Twitter に投稿するツイートに含まれるリンクはすべて t.co という Twitter 公式の URL 短縮サービスによって短縮されてしまう。ここで厄介になるのだが、なんと「140文字まで」という制限は、URL を短縮したあとの文字数に適用される、という仕様である。つまり、Twitter 内部の URL 認識する使用を完全に再現しないと、正確に最終的な文字数を数えることは出来ない。更に、t.co で短縮化された URL の文字数は静的ではないので、<a href="https://dev.twitter.com/docs/api/1/get/help/configuration">test/configuration</a> API から定期的に取得して記録しておく必要がある。</p>
 
@@ -26,19 +28,27 @@
 
 <p>上のルールを適用すると、</p>
 
-<p><code>My website![http://aki-null.net](http://aki-null.net)</code></p>
+<p><code>My website! http://aki-null.net</code></p>
 
-<p>という文字列の文字数は、この記事を書いている現時点では32文字ということになる。## Unicode</p>
+<p>という文字列の文字数は、この記事を書いている現時点では32文字ということになる。</p>
+
+<h2>Unicode</h2>
 
 <p>まず、Twitter のルールに従って文字数を数えるためには、Unicode 正規化を行わなければならない。Twitter は文字数を数えるときは正規化形式C (Normalization Form Canonical Composition) を使用することを指定している。使用している言語・API によって変換する方法は違うが、Objective-C の場合、<code>NSString</code>クラスに<code>- (NSString *)precomposedStringWithCanonicalMapping</code>という API が用意されている。</p>
 
-<p>更に、Twitter は文字を数えるとき、バイト数ではなく、最終的な文字数を数える。つまり、使用している言語、API によっては、正確な文字数をそのまま取得することはできない場合がある。例えば Objective-C を Mac や iPhone で使っている場合、通常文字列を扱うには<code>NSString</code>クラスを使用する。<code>NSString</code>は内部的に文字を格納するために UTF-16 を採用している。そして、<code>NSString</code>の<code>- (NSUInteger)length</code> という API はサロゲートペアを考慮せずに文字数を計算するので、3バイトから4バイトの文字は2文字として数えられてしまう。Objective-C を使っている場合、<code>CFStringIsSurrogateHighCharacter</code>と<code>CFStringIsSurrogateLowCharacter</code>を使うことで、指定した文字がサロゲートペアの一部であるかを確認することができる。## まとめ</p>
+<p>更に、Twitter は文字を数えるとき、バイト数ではなく、最終的な文字数を数える。つまり、使用している言語、API によっては、正確な文字数をそのまま取得することはできない場合がある。例えば Objective-C を Mac や iPhone で使っている場合、通常文字列を扱うには<code>NSString</code>クラスを使用する。<code>NSString</code>は内部的に文字を格納するために UTF-16 を採用している。そして、<code>NSString</code>の<code>- (NSUInteger)length</code> という API はサロゲートペアを考慮せずに文字数を計算するので、3バイトから4バイトの文字は2文字として数えられてしまう。Objective-C を使っている場合、<code>CFStringIsSurrogateHighCharacter</code>と<code>CFStringIsSurrogateLowCharacter</code>を使うことで、指定した文字がサロゲートペアの一部であるかを確認することができる。</p>
 
-<p>正確に文字数を数えるのは非常に難しい。そこで Twitter はいくつか URL を認識したり、文字数を数えるライブラリを複数の言語向けに公開している。
-- Objective-C:<a href="https://github.com/twitter/twitter-text-objc"></a> <a href="https://github.com/twitter/twitter-text-objc">https://github.com/twitter/twitter-text-objc</a>
-- Java:<a href="https://github.com/twitter/twitter-text-java"></a> <a href="https://github.com/twitter/twitter-text-java">https://github.com/twitter/twitter-text-java</a>
-- Javascript:<a href="https://github.com/twitter/twitter-text-js"></a> <a href="https://github.com/twitter/twitter-text-js">https://github.com/twitter/twitter-text-js</a>
-- Ruby:<a href="https://github.com/twitter/twitter-text-rb"></a> <a href="https://github.com/twitter/twitter-text-rb">https://github.com/twitter/twitter-text-rb</a></p>
+<h2>まとめ</h2>
+
+<p>正確に文字数を数えるのは非常に難しい。そこで Twitter はいくつか URL を認識したり、文字数を数えるライブラリを複数の言語向けに公開している。</p>
+
+<ul>
+<li>Objective-C: <a href="twitter-text-objc">https://github.com/twitter/twitter-text-objc</a></li>
+<li>Java: <a href="twitter-text-java">https://github.com/twitter/twitter-text-java</a></li>
+<li>Javascript: <a href="twitter-text-js">https://github.com/twitter/twitter-text-js</a></li>
+<li>Ruby: <a href="twitter-text-rb">https://github.com/twitter/twitter-text-rb</a></li>
+</ul>
+
 
 <p>自分で正確な URL 認識を実装したい場合は、<a href="https://github.com/twitter/twitter-text-conformance">twitter-text-comformance</a> リポジトリにあるテストデータをユニットテストに使用すると良いだろう。</p>
 ]]></content>
@@ -53,7 +63,7 @@
 
 <p>CTLineをループして、Y座標をCTFramesetterに頼らず自力で指定し、CTLineDrawで一行ごと描画することでこの問題を回避できます。NSLayoutManagerを使用して英数字のみを描画した際に使用される行の高さを取得しています。</p>
 
-<p>コードは <a href="https://gist.github.com/1497649"></a> <a href="https://gist.github.com/1497649">https://gist.github.com/1497649</a>  で見ることが出来ます。</p>
+<p>コードは <a href="https://gist.github.com/1497649"></a> <a href="https://gist.github.com/1497649">https://gist.github.com/1497649</a>  に置いてあります。</p>
 ]]></content>
   </entry>
   
@@ -78,7 +88,7 @@
     <link href="http://aki-null.github.com/blog/2011/05/09/markdown/"/>
     <updated>2011-05-09T00:00:00+10:00</updated>
     <id>http://aki-null.github.com/blog/2011/05/09/markdown</id>
-    <content type="html"><![CDATA[<p>最近<a href="http://daringfireball.net/projects/markdown/">Markdown</a> の手軽さを知って、良い編集ソフトが無いか調べたけれど、専用のエディタは無いみたいなので自分で作ろうと思った。ちなみにTextMateならMarkdownのバンドルがあるので、わざわざ専用アプリを作るのは車輪の再発明かもしれないけれど、リアルタイムにアウトプットを表示させたかったので仕方がない。アプリのデザインを構想して、実際アプリを作ろうと思ってから、もう一度自分がしようとしていることを他の人がしていないか確認したら、Githubで発見した。</p>
+    <content type="html"><![CDATA[<p>最近 <a href="http://daringfireball.net/projects/markdown/">Markdown</a> の手軽さを知って、良い編集ソフトが無いか調べたけれど、専用のエディタは無いみたいなので自分で作ろうと思った。ちなみにTextMateならMarkdownのバンドルがあるので、わざわざ専用アプリを作るのは車輪の再発明かもしれないけれど、リアルタイムにアウトプットを表示させたかったので仕方がない。アプリのデザインを構想して、実際アプリを作ろうと思ってから、もう一度自分がしようとしていることを他の人がしていないか確認したら、Githubで発見した。</p>
 
 <p><a href="https://github.com/rentzsch/markdownlive">MarkdownLive</a> という名前のアプリで、何故かバイナリは配布されていない。おそらくはじめに探したときに見つからなかったのはこれが原因だろう。とりあえず<code>git clone</code>してビルドしてみた。自分が構想していたアプリと全く同じだったのでモチベーションが削がれた感じだったのだが、誰でも考えそうなアイデアなので仕方がない。しかし使ってみると色々改善点が浮かんできたので、早速色々挙動を変更したり設定を追加してみた。とりあえず今日までの変更点はこんな感じ。
 - プレビューペインでURLをクリックしたときに、デフォルトブラウザで開く
@@ -90,9 +100,9 @@
 
 <p>その他にも小さな変更点はあるけど、大まかな変更点はこれくらい。</p>
 
-<p>![http://media.tumblr.com/tumblr_lz5bhsEbD11qzbi3l.png]</p>
+<p><img src="http://media.tumblr.com/tumblr_lz5bhsEbD11qzbi3l.png" alt="スクリーンショット" /></p>
 
-<p>アプリを使ってみたかったり、コードをいじりたい人は<a href="https://github.com/aki-null/markdownlive">ここ</a> からフォーク出来ます。バイナリはアップロードしていないので自分でビルドして下さい。</p>
+<p>アプリを使ってみたかったり、コードをいじりたい人は<a href="https://github.com/aki-null/markdownlive">ここ</a>からフォーク出来ます。バイナリはアップロードしていないので自分でビルドして下さい。</p>
 ]]></content>
   </entry>
   
@@ -105,7 +115,9 @@
 
 <p><a href="http://aki-null.net/yf/yf_paste.crx">Download</a>  </p>
 
-<p>Updated (23/07/2011): Updated the icon and fixed the compatibility issue with new version of YF.Updated (15/12/2011): Updated the extension to work with Chrome 16</p>
+<p>Updated (23/07/2011): Updated the icon and fixed the compatibility issue with new version of YF.</p>
+
+<p>Updated (15/12/2011): Updated the extension to work with Chrome 16</p>
 ]]></content>
   </entry>
   
@@ -116,11 +128,11 @@
     <id>http://aki-null.github.com/blog/2011/02/01/url-scanning</id>
     <content type="html"><![CDATA[<p>I have spent significant time trying to scan URLs in a string. The most popular way to do this is to use regular expression.</p>
 
-<p>I have been using regex described <a href="http://www.din.or.jp/~ohzaki/perl.htm#httpURL">here</a>  (Japanese) for my Twitter client <a href="http://sites.google.com/site/yorufukurou/home-en">YoruFukurou</a> . This regular expression was very strict, and followed RFC very well.</p>
+<p>I have been using regex described <a href="http://www.din.or.jp/~ohzaki/perl.htm#httpURL">here</a> (Japanese) for my Twitter client <a href="http://sites.google.com/site/yorufukurou/home-en">YoruFukurou</a>. This regular expression was very strict, and followed RFC very well.</p>
 
 <p>However, things are changing on the web. IDN (Internationalized Domain Name) is becoming somewhat popular in Japan, and there are web browsers that do not percent encode URLs copied from its address bar (i.e. Safari). The URL would not be matched by the regular expression above, because it doesn’t expect IDN, or Unicode characters in URL.</p>
 
-<p>Since I was building a Twitter client, it needed to be lenient in the way it parsed URLs. After trying several different regular expressions like <a href="http://daringfireball.net/2010/07/improved_regex_for_matching_urls">this one</a>  [Daring Fireball], I have realised that there might be simpler and more effective way of doing this. I have spent 10 seconds to come up with the following regular expression.</p>
+<p>Since I was building a Twitter client, it needed to be lenient in the way it parsed URLs. After trying <a href="http://daringfireball.net/2010/07/improved_regex_for_matching_urls">several different regular expressions</a>, I have realised that there might be simpler and more effective way of doing this. I have spent 10 seconds to come up with the following regular expression.</p>
 
 <p><code>https?://[^\s]*</code></p>
 
@@ -141,13 +153,16 @@
 
 <p>My solution was to write my own URL scanner. I have spent about two days writing the initial version of the scanner. The new URL scanner has successfully solved the issue with brackets. The scanner is capable of finding URLs in the following scenarios.</p>
 
-<p><code>String: [https://テスト).com]URL: https://テスト).com</code></p>
+<pre><code>String: [https://テスト).com]
+URL: https://テスト).com
 
-<p><code>String: ([http://en.wikipedia.org/wiki/Perl_](http://en.wikipedia.org/wiki/Perl_) (disambiguation))URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)</code></p>
+String: (http://en.wikipedia.org/wiki/Perl_(disambiguation))
+URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)
+</code></pre>
 
 <p>As you can see, the URL encapsulated by brackets are scanned properly. I have not encountered an issue after changing the URL scanner in my Twitter client to this new scanner.</p>
 
-<p>The code can be found in my <a href="https://github.com/aki-null/URLScanner">GitHub repository</a> . The library is licensed under BSD license, so feel free to use it in your own application.</p>
+<p>The code can be found in my <a href="https://github.com/aki-null/URLScanner">GitHub repository</a>. The library is licensed under BSD license, so feel free to use it in your own application.</p>
 ]]></content>
   </entry>
   
@@ -156,11 +171,11 @@
     <link href="http://aki-null.github.com/blog/2010/01/19/regexkit-on-snow-leopard/"/>
     <updated>2010-01-19T00:00:00+11:00</updated>
     <id>http://aki-null.github.com/blog/2010/01/19/regexkit-on-snow-leopard</id>
-    <content type="html"><![CDATA[<p>I have been using RegexKit for the Twitter client called <a href="http://sites.google.com/site/yorufukurou/">YoruFukurou</a>  for quite some time now. The framework was essential for the application, because the primary functionality of the app heavily involved the use of regular expressions. I tried other libraries, but only RegexKit satisfied my requirements.</p>
+    <content type="html"><![CDATA[<p>I have been using RegexKit for the Twitter client called <a href="http://sites.google.com/site/yorufukurou/">YoruFukurou</a> for quite some time now. The framework was essential for the application, because the primary functionality of the app heavily involved the use of regular expressions. I tried other libraries, but only RegexKit satisfied my requirements.</p>
 
-<p>RegexKit seemed to perform just fine on Snow Leopard, but I found a significant bug. The RegexKit was advertised to support Garbage Collection that was introduced in Leopard, but it seemed to crash as soon as RegexKit API was called on Snow Leopard. After some research, I found out that only one line of code was required to be changed to fix the issue. The bug was being tracked on their <a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2876858&amp;group_id=204582&amp;atid=990188">official bug tracker</a> , but the code maintainer seemed to be inactive. I tried to build the framework after applying the fix, but the build failed miserably on Snow Leopard.</p>
+<p>RegexKit seemed to perform just fine on Snow Leopard, but I found a significant bug. The RegexKit was advertised to support Garbage Collection that was introduced in Leopard, but it seemed to crash as soon as RegexKit API was called on Snow Leopard. After some research, I found out that only one line of code was required to be changed to fix the issue. The bug was being tracked on their <a href="http://sourceforge.net/tracker/?func=detail&amp;aid=2876858&amp;group_id=204582&amp;atid=990188">official bug tracker</a>, but the code maintainer seemed to be inactive. I tried to build the framework after applying the fix, but the build failed miserably on Snow Leopard.</p>
 
-<p>Unfortunately, I had to install Leopard on my external HDD to build the framework, because I had no computers running Leopard. You can download the fixed RegexKit framework from <a href="http://aki-null.net/misc/RegexKit.zip">here</a> , so nobody needs to go through the pain of setting up Leopard system to fix the bug.</p>
+<p>Unfortunately, I had to install Leopard on my external HDD to build the framework, because I had no computers running Leopard. You can download the fixed RegexKit framework from <a href="http://aki-null.net/misc/RegexKit.zip">here</a>, so nobody needs to go through the pain of setting up Leopard system to fix the bug.</p>
 ]]></content>
   </entry>
   
@@ -171,90 +186,80 @@
     <id>http://aki-null.github.com/blog/2009/10/14/grand-central-dispatch-part-2</id>
     <content type="html"><![CDATA[<p>The Grand Central Dispatch (GCD) can be used to optimise programs for multi-core processors. However, the usual issue with threading still exists in GCD (GCD is not a magic). I would like to cover how to use semaphore to make a program thread-safe.</p>
 
-<p>The most common issues you may face when you introduce threading into your program are accesses to shared resources. An example of the issue is presented in the code below.
-int main (int argc, const char * argv[]) {
-   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];</p>
+<p>The most common issues you may face when you introduce threading into your program are accesses to shared resources. An example of the issue is presented in the code below.</p>
 
-<p>   NSMutableSet *items = [NSMutableArray array];</p>
+<pre><code>int main (int argc, const char * argv[]) {
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
-<p>   dispatch_queue_t queue =</p>
+   NSMutableSet *items = [NSMutableArray array];
 
-<pre><code>  dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-</code></pre>
+   dispatch_queue_t queue =
+      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+   dispatch_apply(50, queue,
+         ^(size_t index) {
+            for (int i = 0; i &lt; 500; i++) {
+               [items addObject:@"hi"];
+            }
+         });
 
-<p>   dispatch_apply(50, queue,</p>
+   NSLog(@"%i", [items count]);
 
-<pre><code>     ^(size_t index) {
-        for (int i = 0; i &lt; 500; i++) {
-           [items addObject:@"hi"];
-        }
-     });
-</code></pre>
-
-<p>   NSLog(@&#8221;%i&#8221;, [items count]);</p>
-
-<p>   [pool drain];
+   [pool drain];
    return 0;
-}</p>
-
-<p>The program above simply tries to add an item to the shared resource (NSMutableSet) from multiple threads. If you try to run this program, it will probably crash. It is because NSMutableSet is NOT thread-safe (actually, all collection classes are not thread-safe). To prevent this issue, we could use the traditional <em>@synchronized</em> block to ensure thread-safety (example below).
-int main (int argc, const char * argv[]) {
-   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];</p>
-
-<p>   NSMutableSet *items = [NSMutableArray array];</p>
-
-<p>   dispatch_queue_t queue =</p>
-
-<pre><code>  dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+}
 </code></pre>
 
-<p>   dispatch_apply(50, queue,</p>
+<p>The program above simply tries to add an item to the shared resource (NSMutableSet) from multiple threads. If you try to run this program, it will probably crash. It is because NSMutableSet is NOT thread-safe (actually, all collection classes are not thread-safe). To prevent this issue, we could use the traditional <em>@synchronized</em> block to ensure thread-safety (example below).</p>
 
-<pre><code>     ^(size_t index) {
-        for (int i = 0; i &lt; 500; i++) {
-           @synchronized (items) {
-              [items addObject:@"hi"];
-           }
-        }
-     });
-</code></pre>
+<pre><code>int main (int argc, const char * argv[]) {
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
-<p>   NSLog(@&#8221;%i&#8221;, [items count]);</p>
+   NSMutableSet *items = [NSMutableArray array];
 
-<p>   [pool drain];
+   dispatch_queue_t queue =
+      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+   dispatch_apply(50, queue,
+         ^(size_t index) {
+            for (int i = 0; i &lt; 500; i++) {
+               @synchronized (items) {
+                  [items addObject:@"hi"];
+               }
+            }
+         });
+
+   NSLog(@"%i", [items count]);
+
+   [pool drain];
    return 0;
-}</p>
-
-<p>Well, it runs. But you must remember that locks are very expensive. In the case of the program above, it will lock 500 times per block, which is extremely inefficient. Apple has provided optimised version of semaphore for GCD (dispatch semaphore). The traditional semaphores always require calling down to the kernel to test the semaphore, but the dispatch semaphore tests semaphore in user space, and only traps into the kernel only when the test fails and needs to block the thread. The following code demonstrates the usage of the dispatch semaphore.
-int main (int argc, const char * argv[]) {
-   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];</p>
-
-<p>   NSMutableSet *items = [NSMutableArray array];</p>
-
-<p>   dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
-   dispatch_queue_t queue =</p>
-
-<pre><code>  dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+}
 </code></pre>
 
-<p>   dispatch_apply(50, queue,</p>
+<p>Well, it runs&#8230; slowly. You must remember that locks are very expensive. In the case of the program above, it will lock 500 times per block, which is extremely inefficient. Apple has provided optimised version of semaphore for GCD (dispatch semaphore). The traditional semaphores always require calling down to the kernel to test the semaphore, but the dispatch semaphore tests semaphore in user space, and only traps into the kernel only when the test fails and needs to block the thread. The following code demonstrates the usage of the dispatch semaphore.</p>
 
-<pre><code>     ^(size_t index) {
-        for (int i = 0; i &lt; 500; i++) {
-           dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);
-           [items addObject:@"hi"];
-           dispatch_semaphore_signal(itemLock);
-        }
-     });
-</code></pre>
+<pre><code>int main (int argc, const char * argv[]) {
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
-<p>   dispatch_release(itemLock);</p>
+   NSMutableSet *items = [NSMutableArray array];
 
-<p>   NSLog(@&#8221;%i&#8221;, [items count]);</p>
+   dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
+   dispatch_queue_t queue =
+      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+   dispatch_apply(50, queue,
+         ^(size_t index) {
+            for (int i = 0; i &lt; 500; i++) {
+               dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);
+               [items addObject:@"hi"];
+               dispatch_semaphore_signal(itemLock);
+            }
+         });
+   dispatch_release(itemLock);
 
-<p>   [pool drain];
+   NSLog(@"%i", [items count]);
+
+   [pool drain];
    return 0;
-}</p>
+}
+</code></pre>
 
 <p>“<em>dispatch_semaphore_create</em>” function is used to create a dispatch semaphore. The parameter specifies the starting value for the semaphore. To wait for the resource to be available, you have to use “<em>dispatch_semaphore_wait</em>”. Use “<em>dispatch_semaphore_signal</em>” function to signal the semaphore. Finally, “<em>dispatch_release</em>” function is called to release the memory allocated for the semaphore. The semaphore is not managed by the reference counter, so you must release it manually.</p>
 
@@ -273,32 +278,30 @@ int main (int argc, const char * argv[]) {
 
 <p>I could not figure out what was wrong for the entire day, so I restarted the program before I went to bed last night, and profiled the objects in the memory. When I got up this morning, the memory usage was on 400MB as expected. I ran the profiler again, and it told me that there were insane amount of objects that were not being freed. This was unusual, because Instruments told me that there were no leaks. I have fiddled with the application for a while, and ran the profiler again. I was extremely surprised when I saw the new report generated by the heap tool. All objects that were not being freed were all gone! At this point, I’ve realised that this was not happening to the build that did not have GCD optimisation.</p>
 
-<p>After a while, I found out that it was indeed caused by GCD optimisation code I wrote. I ran some tests, and realised that objects that were allocated in Blocks dispatched to main queue are not being released UNTIL something triggers the NSAutoreleasePool to drain. This means the auto-released objects allocated inside a Block that was dispatched to the main queue are not released until a user interaction occurs.
-dispatch_async(dispatch_get_global_queue(0, 0), ^{</p>
+<p>After a while, I found out that it was indeed caused by GCD optimisation code I wrote. I ran some tests, and realised that objects that were allocated in Blocks dispatched to main queue are not being released UNTIL something triggers the NSAutoreleasePool to drain. This means the auto-released objects allocated inside a Block that was dispatched to the main queue are not released until a user interaction occurs.</p>
 
-<pre><code>// do something expensive
-dispatch_async(dispatch_get_main_queue(), ^{
-    // All auto-released objects allocated
-    // in here are not released until the
-    // next event loop fires.
+<pre><code>dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    // do something expensive
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // All auto-released objects allocated
+        // in here are not released until the
+        // next event loop fires.
+    });
 });
 </code></pre>
 
-<p>});</p>
+<p>The above code should explain what was going on. I ran several tests to validate that my hypothesis was correct. To fix the problem, I have changed the above code to the following code.</p>
 
-<p>The above code should explain what was going on. I ran several tests to validate that my hypothesis was correct. To fix the problem, I have changed the above code to the following code.
-dispatch_async(dispatch_get_global_queue(0, 0), ^{</p>
-
-<pre><code>// do something expensive
-dispatch_async(dispatch_get_main_queue(), ^{
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    // all auto-released objects are released when
-    // this block finishes!
-    [pool drain];
+<pre><code>dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    // do something expensive
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        // all auto-released objects are released when
+        // this block finishes!
+        [pool drain];
+    });
 });
 </code></pre>
-
-<p>});</p>
 
 <p>After placing the NSAutoreleasePool inside a block dispatched to the main queue, everything was back to normal.</p>
 ]]></content>
@@ -309,49 +312,42 @@ dispatch_async(dispatch_get_main_queue(), ^{
     <link href="http://aki-null.github.com/blog/2009/10/06/fast-and-thread-safe-singleton-for-objective-c/"/>
     <updated>2009-10-06T00:00:00+11:00</updated>
     <id>http://aki-null.github.com/blog/2009/10/06/fast-and-thread-safe-singleton-for-objective-c</id>
-    <content type="html"><![CDATA[<p>I have seen various implementations of Singleton pattern in Objective-C in the past. The most common template I have seen is the following.
-static MyClass *instance = nil;</p>
+    <content type="html"><![CDATA[<p>I have seen various implementations of Singleton pattern in Objective-C in the past. The most common template I have seen is the following.</p>
 
-<ul>
-<li>(MyClass *)sharedInstance {
-  @synchronized(self) {
+<pre><code>static MyClass *instance = nil;
 
-<pre><code>  if (instance == nil) {
-      instance = [[self alloc] init];
-  }
++ (MyClass *)sharedInstance {
+    @synchronized(self) {
+        if (instance == nil) {
+            instance = [[self alloc] init];
+        }
+    }
+    return instance;
+}
 </code></pre>
 
-<p>  }
-  return instance;
-}</p></li>
-</ul>
+<p>As you can see, it locks the method using self. The issue with this code is that it can get very slow if this method is called hundreds of times, because the code to instantiate the shared instance must be thread-safe. I was researching for a better way to make this faster, then I found <a href="http://eschatologist.net/blog/?p=178">this article</a>. The comment section of the article details the use of “Method Swizzling” to replace the method to access the shared instance with more optimised code (simply returning the instance without a check). Method swizzling allows us to modify the mapping from a selector to an implementation.</p>
 
+<p>I have tried to use the code provided, but it failed to work. I have done some digging around, and I found an article on <a href="http://www.cocoadev.com/index.pl?MethodSwizzling">CocoaDev</a> detailing the swizzling techniques. I have created a category of NSObject using one of the implementation, and modified my Singleton code to the following.</p>
 
-<p>As you can see, it locks the method using self. The issue with this code is that it can get very slow if this method is called hundreds of times, because the code to instantiate the shared instance must be thread-safe. I was researching for a better way to make this faster, then I found <a href="http://eschatologist.net/blog/?p=178">this article</a> . The comment section of the article details the use of “Method Swizzling” to replace the method to access the shared instance with more optimised code (simply returning the instance without a check). Method swizzling allows us to modify the mapping from a selector to an implementation.</p>
+<pre><code>static MyClass *instance = nil;
 
-<p>I have tried to use the code provided, but it failed to work. I have done some digging around, and I found an article on <a href="http://www.cocoadev.com/index.pl?MethodSwizzling">CocoaDev</a>  detailing the swizzling techniques. I have created a category of NSObject using one of the implementation, and modified my Singleton code to the following.
-static MyClass *instance = nil;</p>
++ (MyClass *)sharedInstance {
+    @synchronized(self) {
+        if (!instance) {
+            instance = [[MyClass alloc] init];
+            OSMemoryBarrier();
+            [self swizzleClassMethod:@selector(sharedInstance)
+                 withClassMethod:@selector(sharedInstance2)];
+        }
+    }
+    return instance;
+}
 
-<ul>
-<li><p>(MyClass *)sharedInstance {
-  @synchronized(self) {</p>
-
-<pre><code>  if (!instance) {
-      instance = [[MyClass alloc] init];
-      OSMemoryBarrier();
-      [self swizzleClassMethod:@selector(sharedInstance)
-           withClassMethod:@selector(sharedInstance2)];
-  }
++ (MyClass *)sharedInstance2 {
+    return instance;
+}
 </code></pre>
-
-<p>  }
-  return instance;
-}</p></li>
-<li><p>(MyClass *)sharedInstance2 {
-  return instance;
-}</p></li>
-</ul>
-
 
 <p>The above code worked very well. The performance of initialisation would be much slower than the original implementation, but it would be extremely fast after the first initialisation.</p>
 
@@ -366,32 +362,31 @@ static MyClass *instance = nil;</p>
     <link href="http://aki-null.github.com/blog/2009/09/30/grand-central-dispatch-part-1/"/>
     <updated>2009-09-30T00:00:00+10:00</updated>
     <id>http://aki-null.github.com/blog/2009/09/30/grand-central-dispatch-part-1</id>
-    <content type="html"><![CDATA[<p>I’ve been working on optimising my Twitter client using Grand Central Dispatch (GCD) recently. <a href="http://www.apple.com/macosx/technology/">Grand Central Dispatch</a>  is an Apple technology to optimise application with multicore processor. It was released with Mac OS 10.6 (Snow Leopard).</p>
+    <content type="html"><![CDATA[<p>I’ve been working on optimising my Twitter client using Grand Central Dispatch (GCD) recently. <a href="http://www.apple.com/macosx/technology/">Grand Central Dispatch</a> is an Apple technology to optimise application with multicore processor. It was released with Mac OS 10.6 (Snow Leopard).</p>
 
-<p>GCD makes it easier for programmers to perform tasks on different threads to optimise its algorithm performance. There are other interesting usages, which I will probably cover later. The GCD uses the new language feature of Objective-C 2.1 (also available on C and C++), called Blocks. Blocks lets us create closure-like objects to make it easy to execute a block of code parallel to the main thread. Blocks can also be used in C or C++. I’m not going to cover how to write blocks in this post, so it may be good to have a <a href="http://en.wikipedia.org/wiki/Blocks_(C_language_extension">read</a>)  about it if you don’t already know how it works.</p>
+<p>GCD makes it easier for programmers to perform tasks on different threads to optimise its algorithm performance. There are other interesting usages, which I will probably cover later. The GCD uses the new language feature of Objective-C 2.1 (also available on C and C++), called Blocks. Blocks lets us create closure-like objects to make it easy to execute a block of code parallel to the main thread. Blocks can also be used in C or C++. I’m not going to cover how to write blocks in this post, so it may be good to have a <a href="http://en.wikipedia.org/wiki/Blocks_(C_language_extension)">read</a> about it if you don’t already know how it works.</p>
 
 <p>The first example I’m going to cover is simple batch processing. It is quite common to batch process data in a loop, but it is usually done on the main thread, which is not desirable for multicore processors.</p>
 
-<p>The following code is a small loop that can be seen in many applications.
-// iterate through all tab items and execute an expensive operation
-for (NSTabViewItem *currentItem in [tabView tabViewItems]) {</p>
+<p>The following code is a small loop that can be seen in many applications.</p>
 
-<pre><code>[[currentItem identifier] doExpensiveOperation];
+<pre><code>// iterate through all tab items and execute an expensive operation
+for (NSTabViewItem *currentItem in [tabView tabViewItems]) {
+    [[currentItem identifier] doExpensiveOperation];
+}
 </code></pre>
 
-<p>}</p>
+<p>As you can see, this code will only utilise one core, which is not efficient for multicore processors. This is where we can introduce one of the GCD feature. The following code basically replaces the loop with GCD batch processing function.</p>
 
-<p>As you can see, this code will only utilise one core, which is not efficient for multicore processors. This is where we can introduce one of the GCD feature. The following code basically replaces the loop with GCD batch processing function.
-// get all tab items
+<pre><code>// get all tab items
 NSArray *tabItems = [tabView tabViewItems];
-dispatch_apply([tabItems count],</p>
-
-<pre><code>    dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-    ^(size_t index) {
-        NSTabViewItem *currentItem;
-        currentItem = [tabItems objectAtIndex:index];
-        [[currentItem identifier] doExpensiveOperation];
-    });
+dispatch_apply([tabItems count],
+        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+        ^(size_t index) {
+            NSTabViewItem *currentItem;
+            currentItem = [tabItems objectAtIndex:index];
+            [[currentItem identifier] doExpensiveOperation];
+        });
 </code></pre>
 
 <p>The <em>“dispatch_apply” </em>function is used to batch process a specified block. The first argument specifies the number of loops to execute. In the example’s case, it is the number of tab items.</p>

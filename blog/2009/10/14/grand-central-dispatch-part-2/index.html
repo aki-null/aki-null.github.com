@@ -92,90 +92,80 @@
 
 <div class="entry-content"><p>The Grand Central Dispatch (GCD) can be used to optimise programs for multi-core processors. However, the usual issue with threading still exists in GCD (GCD is not a magic). I would like to cover how to use semaphore to make a program thread-safe.</p>
 
-<p>The most common issues you may face when you introduce threading into your program are accesses to shared resources. An example of the issue is presented in the code below.
-int main (int argc, const char * argv[]) {
-   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];</p>
+<p>The most common issues you may face when you introduce threading into your program are accesses to shared resources. An example of the issue is presented in the code below.</p>
 
-<p>   NSMutableSet *items = [NSMutableArray array];</p>
+<pre><code>int main (int argc, const char * argv[]) {
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
-<p>   dispatch_queue_t queue =</p>
+   NSMutableSet *items = [NSMutableArray array];
 
-<pre><code>  dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-</code></pre>
+   dispatch_queue_t queue =
+      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+   dispatch_apply(50, queue,
+         ^(size_t index) {
+            for (int i = 0; i &lt; 500; i++) {
+               [items addObject:@"hi"];
+            }
+         });
 
-<p>   dispatch_apply(50, queue,</p>
+   NSLog(@"%i", [items count]);
 
-<pre><code>     ^(size_t index) {
-        for (int i = 0; i &lt; 500; i++) {
-           [items addObject:@"hi"];
-        }
-     });
-</code></pre>
-
-<p>   NSLog(@&#8221;%i&#8221;, [items count]);</p>
-
-<p>   [pool drain];
+   [pool drain];
    return 0;
-}</p>
-
-<p>The program above simply tries to add an item to the shared resource (NSMutableSet) from multiple threads. If you try to run this program, it will probably crash. It is because NSMutableSet is NOT thread-safe (actually, all collection classes are not thread-safe). To prevent this issue, we could use the traditional <em>@synchronized</em> block to ensure thread-safety (example below).
-int main (int argc, const char * argv[]) {
-   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];</p>
-
-<p>   NSMutableSet *items = [NSMutableArray array];</p>
-
-<p>   dispatch_queue_t queue =</p>
-
-<pre><code>  dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+}
 </code></pre>
 
-<p>   dispatch_apply(50, queue,</p>
+<p>The program above simply tries to add an item to the shared resource (NSMutableSet) from multiple threads. If you try to run this program, it will probably crash. It is because NSMutableSet is NOT thread-safe (actually, all collection classes are not thread-safe). To prevent this issue, we could use the traditional <em>@synchronized</em> block to ensure thread-safety (example below).</p>
 
-<pre><code>     ^(size_t index) {
-        for (int i = 0; i &lt; 500; i++) {
-           @synchronized (items) {
-              [items addObject:@"hi"];
-           }
-        }
-     });
-</code></pre>
+<pre><code>int main (int argc, const char * argv[]) {
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
-<p>   NSLog(@&#8221;%i&#8221;, [items count]);</p>
+   NSMutableSet *items = [NSMutableArray array];
 
-<p>   [pool drain];
+   dispatch_queue_t queue =
+      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+   dispatch_apply(50, queue,
+         ^(size_t index) {
+            for (int i = 0; i &lt; 500; i++) {
+               @synchronized (items) {
+                  [items addObject:@"hi"];
+               }
+            }
+         });
+
+   NSLog(@"%i", [items count]);
+
+   [pool drain];
    return 0;
-}</p>
-
-<p>Well, it runs. But you must remember that locks are very expensive. In the case of the program above, it will lock 500 times per block, which is extremely inefficient. Apple has provided optimised version of semaphore for GCD (dispatch semaphore). The traditional semaphores always require calling down to the kernel to test the semaphore, but the dispatch semaphore tests semaphore in user space, and only traps into the kernel only when the test fails and needs to block the thread. The following code demonstrates the usage of the dispatch semaphore.
-int main (int argc, const char * argv[]) {
-   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];</p>
-
-<p>   NSMutableSet *items = [NSMutableArray array];</p>
-
-<p>   dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
-   dispatch_queue_t queue =</p>
-
-<pre><code>  dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+}
 </code></pre>
 
-<p>   dispatch_apply(50, queue,</p>
+<p>Well, it runs&#8230; slowly. You must remember that locks are very expensive. In the case of the program above, it will lock 500 times per block, which is extremely inefficient. Apple has provided optimised version of semaphore for GCD (dispatch semaphore). The traditional semaphores always require calling down to the kernel to test the semaphore, but the dispatch semaphore tests semaphore in user space, and only traps into the kernel only when the test fails and needs to block the thread. The following code demonstrates the usage of the dispatch semaphore.</p>
 
-<pre><code>     ^(size_t index) {
-        for (int i = 0; i &lt; 500; i++) {
-           dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);
-           [items addObject:@"hi"];
-           dispatch_semaphore_signal(itemLock);
-        }
-     });
-</code></pre>
+<pre><code>int main (int argc, const char * argv[]) {
+   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
-<p>   dispatch_release(itemLock);</p>
+   NSMutableSet *items = [NSMutableArray array];
 
-<p>   NSLog(@&#8221;%i&#8221;, [items count]);</p>
+   dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
+   dispatch_queue_t queue =
+      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+   dispatch_apply(50, queue,
+         ^(size_t index) {
+            for (int i = 0; i &lt; 500; i++) {
+               dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);
+               [items addObject:@"hi"];
+               dispatch_semaphore_signal(itemLock);
+            }
+         });
+   dispatch_release(itemLock);
 
-<p>   [pool drain];
+   NSLog(@"%i", [items count]);
+
+   [pool drain];
    return 0;
-}</p>
+}
+</code></pre>
 
 <p>“<em>dispatch_semaphore_create</em>” function is used to create a dispatch semaphore. The parameter specifies the starting value for the semaphore. To wait for the resource to be available, you have to use “<em>dispatch_semaphore_wait</em>”. Use “<em>dispatch_semaphore_signal</em>” function to signal the semaphore. Finally, “<em>dispatch_release</em>” function is called to release the memory allocated for the semaphore. The semaphore is not managed by the reference counter, so you must release it manually.</p>
 
@@ -237,7 +227,7 @@ int main (int argc, const char * argv[]) {
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2012/05/11/">ツイートの文字数</a>
+        <a href="/blog/2012/05/11/tweet-length-count/">ツイートの文字数</a>
       </li>
     
       <li class="post">
