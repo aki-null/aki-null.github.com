@@ -4,7 +4,7 @@
   <title><![CDATA[Nullified Construction]]></title>
   <link href="http://aki-null.github.com/atom.xml" rel="self"/>
   <link href="http://aki-null.github.com/"/>
-  <updated>2012-08-19T21:09:50+10:00</updated>
+  <updated>2012-08-19T21:23:05+10:00</updated>
   <id>http://aki-null.github.com/</id>
   <author>
     <name><![CDATA[Akihiro Noguchi]]></name>
@@ -104,7 +104,7 @@
 
 <p>その他にも小さな変更点はあるけど、大まかな変更点はこれくらい。</p>
 
-<p><img src="http://media.tumblr.com/tumblr_lz5bhsEbD11qzbi3l.png" alt="スクリーンショット" /></p>
+<p><img src="http://blog.aki-null.net/images/markdown/screenshot.png" alt="スクリーンショット" /></p>
 
 <p>アプリを使ってみたかったり、コードをいじりたい人は<a href="https://github.com/aki-null/markdownlive">ここ</a>からフォーク出来ます。バイナリはアップロードしていないので自分でビルドして下さい。</p>
 ]]></content>
