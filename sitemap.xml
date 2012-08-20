@@ -1,61 +1,61 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://aki-null.github.com/blog/2009/09/30/grand-central-dispatch-part-1/</loc>
+        <loc>http://blog.aki-null.net/blog/2009/09/30/grand-central-dispatch-part-1/</loc>
         <lastmod>2012-08-20T10:00:30+10:00</lastmod>
     </url>
     <url>
         <loc>
-            http://aki-null.github.com/blog/2009/10/06/fast-and-thread-safe-singleton-for-objective-c/
+            http://blog.aki-null.net/blog/2009/10/06/fast-and-thread-safe-singleton-for-objective-c/
         </loc>
         <lastmod>2012-08-20T10:07:50+10:00</lastmod>
     </url>
     <url>
-        <loc>http://aki-null.github.com/blog/2009/10/08/memory-management-issues-with-gcd/</loc>
+        <loc>http://blog.aki-null.net/blog/2009/10/08/memory-management-issues-with-gcd/</loc>
         <lastmod>2012-08-20T10:05:39+10:00</lastmod>
     </url>
     <url>
-        <loc>http://aki-null.github.com/blog/2009/10/14/grand-central-dispatch-part-2/</loc>
+        <loc>http://blog.aki-null.net/blog/2009/10/14/grand-central-dispatch-part-2/</loc>
         <lastmod>2012-08-20T10:04:30+10:00</lastmod>
     </url>
     <url>
-        <loc>http://aki-null.github.com/blog/2010/01/19/regexkit-on-snow-leopard/</loc>
+        <loc>http://blog.aki-null.net/blog/2010/01/19/regexkit-on-snow-leopard/</loc>
         <lastmod>2012-08-20T10:19:57+10:00</lastmod>
     </url>
     <url>
-        <loc>http://aki-null.github.com/blog/2011/02/01/url-scanning/</loc>
+        <loc>http://blog.aki-null.net/blog/2011/02/01/url-scanning/</loc>
         <lastmod>2012-08-20T10:12:37+10:00</lastmod>
     </url>
     <url>
-        <loc>http://aki-null.github.com/blog/2011/03/21/chrome-extension-for-yorufukurou/</loc>
+        <loc>http://blog.aki-null.net/blog/2011/03/21/chrome-extension-for-yorufukurou/</loc>
         <lastmod>2012-08-19T21:03:42+10:00</lastmod>
     </url>
     <url>
-        <loc>http://aki-null.github.com/blog/2011/05/09/markdown/</loc>
+        <loc>http://blog.aki-null.net/blog/2011/05/09/markdown/</loc>
         <lastmod>2012-08-20T16:24:43+10:00</lastmod>
     </url>
     <url>
-        <loc>http://aki-null.github.com/blog/2011/10/21/coteditor/</loc>
+        <loc>http://blog.aki-null.net/blog/2011/10/21/coteditor/</loc>
         <lastmod>2012-08-20T16:24:47+10:00</lastmod>
     </url>
     <url>
-        <loc>http://aki-null.github.com/blog/2011/12/20/core-text-api/</loc>
+        <loc>http://blog.aki-null.net/blog/2011/12/20/core-text-api/</loc>
         <lastmod>2012-08-20T16:24:50+10:00</lastmod>
     </url>
     <url>
-        <loc>http://aki-null.github.com/blog/2012/05/11/tweet-length-count/</loc>
+        <loc>http://blog.aki-null.net/blog/2012/05/11/tweet-length-count/</loc>
         <lastmod>2012-08-20T10:17:57+10:00</lastmod>
     </url>
     <url>
-        <loc>http://aki-null.github.com/blog/2012/08/20/cbs-installing-apps/</loc>
+        <loc>http://blog.aki-null.net/blog/2012/08/20/cbs-installing-apps/</loc>
         <lastmod>2012-08-20T17:01:16+10:00</lastmod>
     </url>
     <url>
-        <loc>http://aki-null.github.com/blog/archives/</loc>
+        <loc>http://blog.aki-null.net/blog/archives/</loc>
         <lastmod>2012-08-20T17:01:16+10:00</lastmod>
     </url>
     <url>
-        <loc>http://aki-null.github.com/</loc>
+        <loc>http://blog.aki-null.net/</loc>
         <lastmod>2012-08-20T17:01:16+10:00</lastmod>
     </url>
 </urlset>
