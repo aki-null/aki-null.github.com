@@ -89,6 +89,9 @@
 
 <p>However, things are changing on the web. IDN (Internationalized Domain Name) is becoming somewhat popular in Japan, and there are web browsers that do not percent encode URLs copied from its address bar (i.e. Safari). The URL would not be matched by the regular expression above, because it doesn’t expect IDN, or Unicode characters in URL.</p>
 
+<!--more-->
+
+
 <p>Since I was building a Twitter client, it needed to be lenient in the way it parsed URLs. After trying <a href="http://daringfireball.net/2010/07/improved_regex_for_matching_urls">several different regular expressions</a>, I have realised that there might be simpler and more effective way of doing this. I have spent 10 seconds to come up with the following regular expression.</p>
 
 <p><code>https?://[^\s]*</code></p>
@@ -110,12 +113,17 @@
 
 <p>My solution was to write my own URL scanner. I have spent about two days writing the initial version of the scanner. The new URL scanner has successfully solved the issue with brackets. The scanner is capable of finding URLs in the following scenarios.</p>
 
-<pre><code>String: [https://テスト).com]
-URL: https://テスト).com
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>String: [https://テスト).com]
+</span><span class='line'>URL: https://テスト).com
+</span><span class='line'>
+</span><span class='line'>String: (http://en.wikipedia.org/wiki/Perl_(disambiguation))
+</span><span class='line'>URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)</span></code></pre></td></tr></table></div></figure>
 
-String: (http://en.wikipedia.org/wiki/Perl_(disambiguation))
-URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)
-</code></pre>
 
 <p>As you can see, the URL encapsulated by brackets are scanned properly. I have not encountered an issue after changing the URL scanner in my Twitter client to this new scanner.</p>
 

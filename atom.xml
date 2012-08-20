@@ -4,7 +4,7 @@
   <title><![CDATA[Nullified Construction]]></title>
   <link href="http://aki-null.github.com/atom.xml" rel="self"/>
   <link href="http://aki-null.github.com/"/>
-  <updated>2012-08-19T21:27:00+10:00</updated>
+  <updated>2012-08-20T10:22:41+10:00</updated>
   <id>http://aki-null.github.com/</id>
   <author>
     <name><![CDATA[Akihiro Noguchi]]></name>
@@ -20,9 +20,12 @@
     <id>http://aki-null.github.com/blog/2012/05/11/tweet-length-count</id>
     <content type="html"><![CDATA[<p>Twitter には1つの投稿につき140文字までしか送信できないルールがある。普通に考えると、それぞれのプログラミング言語の API を使って普通に文字数を数えれば思うだろう。しかし、この実装が簡単に見える機能にはいろいろな罠が潜んでいる。</p>
 
+<!--more-->
+
+
 <h2>URL</h2>
 
-<p>まず、Twitter に投稿するツイートに含まれるリンクはすべて t.co という Twitter 公式の URL 短縮サービスによって短縮されてしまう。ここで厄介になるのだが、なんと「140文字まで」という制限は、URL を短縮したあとの文字数に適用される、という仕様である。つまり、Twitter 内部の URL 認識する使用を完全に再現しないと、正確に最終的な文字数を数えることは出来ない。更に、t.co で短縮化された URL の文字数は静的ではないので、<a href="https://dev.twitter.com/docs/api/1/get/help/configuration">test/configuration</a> API から定期的に取得して記録しておく必要がある。</p>
+<p>Twitter に投稿するツイートに含まれるリンクはすべて t.co という Twitter 公式の URL 短縮サービスによって短縮されてしまうのだが、「140文字まで」という制限はURL を短縮したあとの文字数に適用される。つまり、Twitter 内部の URL 認識する使用を完全に再現しないと、正確に最終的な文字数を数えることは出来ない。更に、t.co で短縮化された URL の文字数は静的ではないので、<a href="https://dev.twitter.com/docs/api/1/get/help/configuration">test/configuration</a> API から定期的に取得して記録しておく必要がある。</p>
 
 <p>次に、https で始まる URL が t.co によって短縮された場合、t.co 化された URL も https で始まるようになる。なので、先程の API から両方の URL の長さの値が取得することができる。この記事を書いている時点では通常の URL の場合20文字、https で始まる URL の場合は21文字となっている。</p>
 
@@ -43,10 +46,10 @@
 <p>正確に文字数を数えるのは非常に難しい。そこで Twitter はいくつか URL を認識したり、文字数を数えるライブラリを複数の言語向けに公開している。</p>
 
 <ul>
-<li>Objective-C: <a href="twitter-text-objc">https://github.com/twitter/twitter-text-objc</a></li>
-<li>Java: <a href="twitter-text-java">https://github.com/twitter/twitter-text-java</a></li>
-<li>Javascript: <a href="twitter-text-js">https://github.com/twitter/twitter-text-js</a></li>
-<li>Ruby: <a href="twitter-text-rb">https://github.com/twitter/twitter-text-rb</a></li>
+<li>Objective-C: <a href="https://github.com/twitter/twitter-text-objc">twitter-text-objc</a></li>
+<li>Java: <a href="https://github.com/twitter/twitter-text-java">twitter-text-java</a></li>
+<li>Javascript: <a href="https://github.com/twitter/twitter-text-js">twitter-text-js</a></li>
+<li>Ruby: <a href="https://github.com/twitter/twitter-text-rb">twitter-text-rb</a></li>
 </ul>
 
 
@@ -59,11 +62,11 @@
     <link href="http://aki-null.github.com/blog/2011/12/20/core-text-api/"/>
     <updated>2011-12-20T00:00:00+11:00</updated>
     <id>http://aki-null.github.com/blog/2011/12/20/core-text-api</id>
-    <content type="html"><![CDATA[<p>Core Text APIを使用して日本語をレンダリングする際に、行間が英数文字と比べると異様に広くなる問題があります。詳しくは <a href="http://ewa4618.vjck.com/2011/07/05/tweetbot%EF%BC%9A%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%81%AE%E8%A1%8C%E9%96%93%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6/">E-WA’s Blog - Tweetbot：日本語テキストの行間について</a>  で説明されています。</p>
+    <content type="html"><![CDATA[<p>Core Text APIを使用して日本語をレンダリングする際に、行間が英数文字と比べると異様に広くなる問題があります。詳しくは <a href="http://ewa4618.vjck.com/2011/07/05/tweetbot%EF%BC%9A%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%81%AE%E8%A1%8C%E9%96%93%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6/">E-WA’s Blog - Tweetbot：日本語テキストの行間について</a> で説明されています。</p>
 
 <p>CTLineをループして、Y座標をCTFramesetterに頼らず自力で指定し、CTLineDrawで一行ごと描画することでこの問題を回避できます。NSLayoutManagerを使用して英数字のみを描画した際に使用される行の高さを取得しています。</p>
 
-<p>コードは <a href="https://gist.github.com/1497649"></a> <a href="https://gist.github.com/1497649">https://gist.github.com/1497649</a>  に置いてあります。</p>
+<p>コードは <a href="https://gist.github.com/1497649">https://gist.github.com/1497649</a> に置いてあります。</p>
 ]]></content>
   </entry>
   
@@ -77,7 +80,7 @@
 
 <p>SDKは10.6をターゲットにしてビルドしてます。PPCのバイナリは含まれていません。</p>
 
-<p><a href="http://blog.aki-null.net/wp-content/uploads/2011/05/OgreKit_Find_Custom.zip">ここから</a> 手を加えたOgreKit.frameworkをダウンロードして、CotEditor.app/Contents/Frameworks/OgreKit.framework にコピーするだけ。Returnと一緒にShiftキーを押すと、以前と同じように検索後にパネルが閉じます。</p>
+<p><a href="https://dl.dropbox.com/u/86848/OgreKit_Find_Custom.zip">ここから</a> 手を加えたOgreKit.frameworkをダウンロードして、CotEditor.app/Contents/Frameworks/OgreKit.framework にコピーするだけ。Returnと一緒にShiftキーを押すと、以前と同じように検索後にパネルが閉じます。</p>
 
 <p>追記: CotEditor本家に変更点が反映されたので、次のCotEditorのリリースではこの挙動がデフォルトになると思います。</p>
 ]]></content>
@@ -91,6 +94,9 @@
     <content type="html"><![CDATA[<p>最近 <a href="http://daringfireball.net/projects/markdown/">Markdown</a> の手軽さを知って、良い編集ソフトが無いか調べたけれど、専用のエディタは無いみたいなので自分で作ろうと思った。ちなみにTextMateならMarkdownのバンドルがあるので、わざわざ専用アプリを作るのは車輪の再発明かもしれないけれど、リアルタイムにアウトプットを表示させたかったので仕方がない。アプリのデザインを構想して、実際アプリを作ろうと思ってから、もう一度自分がしようとしていることを他の人がしていないか確認したら、Githubで発見した。</p>
 
 <p><a href="https://github.com/rentzsch/markdownlive">MarkdownLive</a> という名前のアプリで、何故かバイナリは配布されていない。おそらくはじめに探したときに見つからなかったのはこれが原因だろう。とりあえず<code>git clone</code>してビルドしてみた。自分が構想していたアプリと全く同じだったのでモチベーションが削がれた感じだったのだが、誰でも考えそうなアイデアなので仕方がない。しかし使ってみると色々改善点が浮かんできたので、早速色々挙動を変更したり設定を追加してみた。とりあえず今日までの変更点はこんな感じ。</p>
+
+<!--more-->
+
 
 <ul>
 <li>プレビューペインでURLをクリックしたときに、デフォルトブラウザで開く</li>
@@ -136,6 +142,9 @@
 
 <p>However, things are changing on the web. IDN (Internationalized Domain Name) is becoming somewhat popular in Japan, and there are web browsers that do not percent encode URLs copied from its address bar (i.e. Safari). The URL would not be matched by the regular expression above, because it doesn’t expect IDN, or Unicode characters in URL.</p>
 
+<!--more-->
+
+
 <p>Since I was building a Twitter client, it needed to be lenient in the way it parsed URLs. After trying <a href="http://daringfireball.net/2010/07/improved_regex_for_matching_urls">several different regular expressions</a>, I have realised that there might be simpler and more effective way of doing this. I have spent 10 seconds to come up with the following regular expression.</p>
 
 <p><code>https?://[^\s]*</code></p>
@@ -157,12 +166,17 @@
 
 <p>My solution was to write my own URL scanner. I have spent about two days writing the initial version of the scanner. The new URL scanner has successfully solved the issue with brackets. The scanner is capable of finding URLs in the following scenarios.</p>
 
-<pre><code>String: [https://テスト).com]
-URL: https://テスト).com
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>String: [https://テスト).com]
+</span><span class='line'>URL: https://テスト).com
+</span><span class='line'>
+</span><span class='line'>String: (http://en.wikipedia.org/wiki/Perl_(disambiguation))
+</span><span class='line'>URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)</span></code></pre></td></tr></table></div></figure>
 
-String: (http://en.wikipedia.org/wiki/Perl_(disambiguation))
-URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)
-</code></pre>
 
 <p>As you can see, the URL encapsulated by brackets are scanned properly. I have not encountered an issue after changing the URL scanner in my Twitter client to this new scanner.</p>
 
@@ -188,86 +202,155 @@ URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)
     <link href="http://aki-null.github.com/blog/2009/10/14/grand-central-dispatch-part-2/"/>
     <updated>2009-10-14T00:00:00+11:00</updated>
     <id>http://aki-null.github.com/blog/2009/10/14/grand-central-dispatch-part-2</id>
-    <content type="html"><![CDATA[<p>The Grand Central Dispatch (GCD) can be used to optimise programs for multi-core processors. However, the usual issue with threading still exists in GCD (GCD is not a magic). I would like to cover how to use semaphore to make a program thread-safe.</p>
+    <content type="html"><![CDATA[<p>The Grand Central Dispatch (GCD) can be used to optimise programs for multi-core processors. However, the usual issue with threading still exists in GCD. I would like to cover how to use semaphore to make a program thread-safe.</p>
+
+<!--more-->
+
 
 <p>The most common issues you may face when you introduce threading into your program are accesses to shared resources. An example of the issue is presented in the code below.</p>
 
-<pre><code>int main (int argc, const char * argv[]) {
-   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span><span class='line'>   <span class="n">NSAutoreleasePool</span> <span class="o">*</span> <span class="n">pool</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSAutoreleasePool</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">NSMutableSet</span> <span class="o">*</span><span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span>
+</span><span class='line'>      <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">dispatch_apply</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span>
+</span><span class='line'>         <span class="o">^</span><span class="p">(</span><span class="n">size_t</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>               <span class="p">[</span><span class="n">items</span> <span class="nl">addObject:</span><span class="s">@&quot;hi&quot;</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>         <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%i&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">items</span> <span class="n">count</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="p">[</span><span class="n">pool</span> <span class="n">drain</span><span class="p">];</span>
+</span><span class='line'>   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-   NSMutableSet *items = [NSMutableArray array];
-
-   dispatch_queue_t queue =
-      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-   dispatch_apply(50, queue,
-         ^(size_t index) {
-            for (int i = 0; i &lt; 500; i++) {
-               [items addObject:@"hi"];
-            }
-         });
-
-   NSLog(@"%i", [items count]);
-
-   [pool drain];
-   return 0;
-}
-</code></pre>
 
 <p>The program above simply tries to add an item to the shared resource (NSMutableSet) from multiple threads. If you try to run this program, it will probably crash. It is because NSMutableSet is NOT thread-safe (actually, all collection classes are not thread-safe). To prevent this issue, we could use the traditional <em>@synchronized</em> block to ensure thread-safety (example below).</p>
 
-<pre><code>int main (int argc, const char * argv[]) {
-   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span><span class='line'>   <span class="n">NSAutoreleasePool</span> <span class="o">*</span> <span class="n">pool</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSAutoreleasePool</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">NSMutableSet</span> <span class="o">*</span><span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span>
+</span><span class='line'>      <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">dispatch_apply</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span>
+</span><span class='line'>         <span class="o">^</span><span class="p">(</span><span class="n">size_t</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>               <span class="k">@synchronized</span> <span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                  <span class="p">[</span><span class="n">items</span> <span class="nl">addObject:</span><span class="s">@&quot;hi&quot;</span><span class="p">];</span>
+</span><span class='line'>               <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>         <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%i&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">items</span> <span class="n">count</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="p">[</span><span class="n">pool</span> <span class="n">drain</span><span class="p">];</span>
+</span><span class='line'>   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-   NSMutableSet *items = [NSMutableArray array];
-
-   dispatch_queue_t queue =
-      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-   dispatch_apply(50, queue,
-         ^(size_t index) {
-            for (int i = 0; i &lt; 500; i++) {
-               @synchronized (items) {
-                  [items addObject:@"hi"];
-               }
-            }
-         });
-
-   NSLog(@"%i", [items count]);
-
-   [pool drain];
-   return 0;
-}
-</code></pre>
 
 <p>Well, it runs&#8230; slowly. You must remember that locks are very expensive. In the case of the program above, it will lock 500 times per block, which is extremely inefficient. Apple has provided optimised version of semaphore for GCD (dispatch semaphore). The traditional semaphores always require calling down to the kernel to test the semaphore, but the dispatch semaphore tests semaphore in user space, and only traps into the kernel only when the test fails and needs to block the thread. The following code demonstrates the usage of the dispatch semaphore.</p>
 
-<pre><code>int main (int argc, const char * argv[]) {
-   NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span><span class='line'>   <span class="n">NSAutoreleasePool</span> <span class="o">*</span> <span class="n">pool</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSAutoreleasePool</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">NSMutableSet</span> <span class="o">*</span><span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">dispatch_semaphore_t</span> <span class="n">itemLock</span> <span class="o">=</span> <span class="n">dispatch_semaphore_create</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">dispatch_queue_t</span> <span class="n">queue</span> <span class="o">=</span>
+</span><span class='line'>      <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">dispatch_apply</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span>
+</span><span class='line'>         <span class="o">^</span><span class="p">(</span><span class="n">size_t</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>               <span class="n">dispatch_semaphore_wait</span><span class="p">(</span><span class="n">itemLock</span><span class="p">,</span> <span class="n">DISPATCH_TIME_FOREVER</span><span class="p">);</span>
+</span><span class='line'>               <span class="p">[</span><span class="n">items</span> <span class="nl">addObject:</span><span class="s">@&quot;hi&quot;</span><span class="p">];</span>
+</span><span class='line'>               <span class="n">dispatch_semaphore_signal</span><span class="p">(</span><span class="n">itemLock</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>         <span class="p">});</span>
+</span><span class='line'>   <span class="n">dispatch_release</span><span class="p">(</span><span class="n">itemLock</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%i&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">items</span> <span class="n">count</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="p">[</span><span class="n">pool</span> <span class="n">drain</span><span class="p">];</span>
+</span><span class='line'>   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-   NSMutableSet *items = [NSMutableArray array];
-
-   dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
-   dispatch_queue_t queue =
-      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-   dispatch_apply(50, queue,
-         ^(size_t index) {
-            for (int i = 0; i &lt; 500; i++) {
-               dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);
-               [items addObject:@"hi"];
-               dispatch_semaphore_signal(itemLock);
-            }
-         });
-   dispatch_release(itemLock);
-
-   NSLog(@"%i", [items count]);
-
-   [pool drain];
-   return 0;
-}
-</code></pre>
 
 <p>“<em>dispatch_semaphore_create</em>” function is used to create a dispatch semaphore. The parameter specifies the starting value for the semaphore. To wait for the resource to be available, you have to use “<em>dispatch_semaphore_wait</em>”. Use “<em>dispatch_semaphore_signal</em>” function to signal the semaphore. Finally, “<em>dispatch_release</em>” function is called to release the memory allocated for the semaphore. The semaphore is not managed by the reference counter, so you must release it manually.</p>
 
-<p>This is the basic usage of dispatch semaphore. It also has many other usages, such as managing program flow of threaded application.</p>
+<p>This is the basic usage of dispatch semaphore. It also has many other usages, which I may cover later.</p>
 ]]></content>
   </entry>
   
@@ -278,34 +361,56 @@ URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)
     <id>http://aki-null.github.com/blog/2009/10/08/memory-management-issues-with-gcd</id>
     <content type="html"><![CDATA[<p>I have been using GCD quite extensively on my desktop application, and have noticed severe memory management issue. The battle started when I have realised a strange memory usage increase when the application was ran overnight without any user interaction. The memory usage of the application was about 70MB before I went to bed. When I got up, the memory usage was on 400MB. This was unexpected, because I was always making sure that there are no memory leaks in my application using Instruments.</p>
 
+<!--more-->
+
+
 <p>I was trying to come up with a valid explanation of this issue to fix the bug. I have profiled the objects in the memory using the command line tool “heap” that was apparently introduced on Snow Leopard. However, I could not find significant issue after running it for an hour.</p>
 
 <p>I could not figure out what was wrong for the entire day, so I restarted the program before I went to bed last night, and profiled the objects in the memory. When I got up this morning, the memory usage was on 400MB as expected. I ran the profiler again, and it told me that there were insane amount of objects that were not being freed. This was unusual, because Instruments told me that there were no leaks. I have fiddled with the application for a while, and ran the profiler again. I was extremely surprised when I saw the new report generated by the heap tool. All objects that were not being freed were all gone! At this point, I’ve realised that this was not happening to the build that did not have GCD optimisation.</p>
 
 <p>After a while, I found out that it was indeed caused by GCD optimisation code I wrote. I ran some tests, and realised that objects that were allocated in Blocks dispatched to main queue are not being released UNTIL something triggers the NSAutoreleasePool to drain. This means the auto-released objects allocated inside a Block that was dispatched to the main queue are not released until a user interaction occurs.</p>
 
-<pre><code>dispatch_async(dispatch_get_global_queue(0, 0), ^{
-    // do something expensive
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // All auto-released objects allocated
-        // in here are not released until the
-        // next event loop fires.
-    });
-});
-</code></pre>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// do something expensive</span>
+</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="c1">// All auto-released objects allocated</span>
+</span><span class='line'>        <span class="c1">// in here are not released until the</span>
+</span><span class='line'>        <span class="c1">// next event loop fires.</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>The above code should explain what was going on. I ran several tests to validate that my hypothesis was correct. To fix the problem, I have changed the above code to the following code.</p>
 
-<pre><code>dispatch_async(dispatch_get_global_queue(0, 0), ^{
-    // do something expensive
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        // all auto-released objects are released when
-        // this block finishes!
-        [pool drain];
-    });
-});
-</code></pre>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// do something expensive</span>
+</span><span class='line'>    <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="n">NSAutoreleasePool</span> <span class="o">*</span><span class="n">pool</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSAutoreleasePool</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="c1">// all auto-released objects are released when</span>
+</span><span class='line'>        <span class="c1">// this block finishes!</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">pool</span> <span class="n">drain</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>After placing the NSAutoreleasePool inside a block dispatched to the main queue, everything was back to normal.</p>
 ]]></content>
@@ -318,40 +423,72 @@ URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)
     <id>http://aki-null.github.com/blog/2009/10/06/fast-and-thread-safe-singleton-for-objective-c</id>
     <content type="html"><![CDATA[<p>I have seen various implementations of Singleton pattern in Objective-C in the past. The most common template I have seen is the following.</p>
 
-<pre><code>static MyClass *instance = nil;
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="n">MyClass</span> <span class="o">*</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">MyClass</span> <span class="o">*</span><span class="p">)</span><span class="nf">sharedInstance</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">@synchronized</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">instance</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">instance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-+ (MyClass *)sharedInstance {
-    @synchronized(self) {
-        if (instance == nil) {
-            instance = [[self alloc] init];
-        }
-    }
-    return instance;
-}
-</code></pre>
 
 <p>As you can see, it locks the method using self. The issue with this code is that it can get very slow if this method is called hundreds of times, because the code to instantiate the shared instance must be thread-safe. I was researching for a better way to make this faster, then I found <a href="http://eschatologist.net/blog/?p=178">this article</a>. The comment section of the article details the use of “Method Swizzling” to replace the method to access the shared instance with more optimised code (simply returning the instance without a check). Method swizzling allows us to modify the mapping from a selector to an implementation.</p>
 
+<!--more-->
+
+
 <p>I have tried to use the code provided, but it failed to work. I have done some digging around, and I found an article on <a href="http://www.cocoadev.com/index.pl?MethodSwizzling">CocoaDev</a> detailing the swizzling techniques. I have created a category of NSObject using one of the implementation, and modified my Singleton code to the following.</p>
 
-<pre><code>static MyClass *instance = nil;
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="n">MyClass</span> <span class="o">*</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">MyClass</span> <span class="o">*</span><span class="p">)</span><span class="nf">sharedInstance</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">@synchronized</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">instance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">instance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MyClass</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">OSMemoryBarrier</span><span class="p">();</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">swizzleClassMethod:</span><span class="k">@selector</span><span class="p">(</span><span class="n">sharedInstance</span><span class="p">)</span>
+</span><span class='line'>                 <span class="nl">withClassMethod:</span><span class="k">@selector</span><span class="p">(</span><span class="n">sharedInstance2</span><span class="p">)];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">MyClass</span> <span class="o">*</span><span class="p">)</span><span class="nf">sharedInstance2</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-+ (MyClass *)sharedInstance {
-    @synchronized(self) {
-        if (!instance) {
-            instance = [[MyClass alloc] init];
-            OSMemoryBarrier();
-            [self swizzleClassMethod:@selector(sharedInstance)
-                 withClassMethod:@selector(sharedInstance2)];
-        }
-    }
-    return instance;
-}
-
-+ (MyClass *)sharedInstance2 {
-    return instance;
-}
-</code></pre>
 
 <p>The above code worked very well. The performance of initialisation would be much slower than the original implementation, but it would be extremely fast after the first initialisation.</p>
 
@@ -370,28 +507,46 @@ URL: http://en.wikipedia.org/wiki/Perl_(disambiguation)
 
 <p>GCD makes it easier for programmers to perform tasks on different threads to optimise its algorithm performance. There are other interesting usages, which I will probably cover later. The GCD uses the new language feature of Objective-C 2.1 (also available on C and C++), called Blocks. Blocks lets us create closure-like objects to make it easy to execute a block of code parallel to the main thread. Blocks can also be used in C or C++. I’m not going to cover how to write blocks in this post, so it may be good to have a <a href="http://en.wikipedia.org/wiki/Blocks_(C_language_extension)">read</a> about it if you don’t already know how it works.</p>
 
+<!--more-->
+
+
 <p>The first example I’m going to cover is simple batch processing. It is quite common to batch process data in a loop, but it is usually done on the main thread, which is not desirable for multicore processors.</p>
 
 <p>The following code is a small loop that can be seen in many applications.</p>
 
-<pre><code>// iterate through all tab items and execute an expensive operation
-for (NSTabViewItem *currentItem in [tabView tabViewItems]) {
-    [[currentItem identifier] doExpensiveOperation];
-}
-</code></pre>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// iterate through all tab items and execute an expensive operation</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">NSTabViewItem</span> <span class="o">*</span><span class="n">currentItem</span> <span class="k">in</span> <span class="p">[</span><span class="n">tabView</span> <span class="n">tabViewItems</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">currentItem</span> <span class="n">identifier</span><span class="p">]</span> <span class="n">doExpensiveOperation</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>As you can see, this code will only utilise one core, which is not efficient for multicore processors. This is where we can introduce one of the GCD feature. The following code basically replaces the loop with GCD batch processing function.</p>
 
-<pre><code>// get all tab items
-NSArray *tabItems = [tabView tabViewItems];
-dispatch_apply([tabItems count],
-        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-        ^(size_t index) {
-            NSTabViewItem *currentItem;
-            currentItem = [tabItems objectAtIndex:index];
-            [[currentItem identifier] doExpensiveOperation];
-        });
-</code></pre>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// get all tab items</span>
+</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">tabItems</span> <span class="o">=</span> <span class="p">[</span><span class="n">tabView</span> <span class="n">tabViewItems</span><span class="p">];</span>
+</span><span class='line'><span class="n">dispatch_apply</span><span class="p">([</span><span class="n">tabItems</span> <span class="n">count</span><span class="p">],</span>
+</span><span class='line'>        <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+</span><span class='line'>        <span class="o">^</span><span class="p">(</span><span class="n">size_t</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">NSTabViewItem</span> <span class="o">*</span><span class="n">currentItem</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">currentItem</span> <span class="o">=</span> <span class="p">[</span><span class="n">tabItems</span> <span class="nl">objectAtIndex:</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[[</span><span class="n">currentItem</span> <span class="n">identifier</span><span class="p">]</span> <span class="n">doExpensiveOperation</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>The <em>“dispatch_apply” </em>function is used to batch process a specified block. The first argument specifies the number of loops to execute. In the example’s case, it is the number of tab items.</p>
 

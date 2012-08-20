@@ -87,28 +87,46 @@
 
 <p>GCD makes it easier for programmers to perform tasks on different threads to optimise its algorithm performance. There are other interesting usages, which I will probably cover later. The GCD uses the new language feature of Objective-C 2.1 (also available on C and C++), called Blocks. Blocks lets us create closure-like objects to make it easy to execute a block of code parallel to the main thread. Blocks can also be used in C or C++. I’m not going to cover how to write blocks in this post, so it may be good to have a <a href="http://en.wikipedia.org/wiki/Blocks_(C_language_extension)">read</a> about it if you don’t already know how it works.</p>
 
+<!--more-->
+
+
 <p>The first example I’m going to cover is simple batch processing. It is quite common to batch process data in a loop, but it is usually done on the main thread, which is not desirable for multicore processors.</p>
 
 <p>The following code is a small loop that can be seen in many applications.</p>
 
-<pre><code>// iterate through all tab items and execute an expensive operation
-for (NSTabViewItem *currentItem in [tabView tabViewItems]) {
-    [[currentItem identifier] doExpensiveOperation];
-}
-</code></pre>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// iterate through all tab items and execute an expensive operation</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">NSTabViewItem</span> <span class="o">*</span><span class="n">currentItem</span> <span class="k">in</span> <span class="p">[</span><span class="n">tabView</span> <span class="n">tabViewItems</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">currentItem</span> <span class="n">identifier</span><span class="p">]</span> <span class="n">doExpensiveOperation</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>As you can see, this code will only utilise one core, which is not efficient for multicore processors. This is where we can introduce one of the GCD feature. The following code basically replaces the loop with GCD batch processing function.</p>
 
-<pre><code>// get all tab items
-NSArray *tabItems = [tabView tabViewItems];
-dispatch_apply([tabItems count],
-        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-        ^(size_t index) {
-            NSTabViewItem *currentItem;
-            currentItem = [tabItems objectAtIndex:index];
-            [[currentItem identifier] doExpensiveOperation];
-        });
-</code></pre>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// get all tab items</span>
+</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">tabItems</span> <span class="o">=</span> <span class="p">[</span><span class="n">tabView</span> <span class="n">tabViewItems</span><span class="p">];</span>
+</span><span class='line'><span class="n">dispatch_apply</span><span class="p">([</span><span class="n">tabItems</span> <span class="n">count</span><span class="p">],</span>
+</span><span class='line'>        <span class="n">dispatch_get_global_queue</span><span class="p">(</span><span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+</span><span class='line'>        <span class="o">^</span><span class="p">(</span><span class="n">size_t</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">NSTabViewItem</span> <span class="o">*</span><span class="n">currentItem</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">currentItem</span> <span class="o">=</span> <span class="p">[</span><span class="n">tabItems</span> <span class="nl">objectAtIndex:</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[[</span><span class="n">currentItem</span> <span class="n">identifier</span><span class="p">]</span> <span class="n">doExpensiveOperation</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>The <em>“dispatch_apply” </em>function is used to batch process a specified block. The first argument specifies the number of loops to execute. In the example’s case, it is the number of tab items.</p>
 

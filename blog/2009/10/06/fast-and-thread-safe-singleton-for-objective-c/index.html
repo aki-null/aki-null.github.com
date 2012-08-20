@@ -9,7 +9,11 @@
   <meta name="author" content="Akihiro Noguchi">
 
   
-  <meta name="description" content="I have seen various implementations of Singleton pattern in Objective-C in the past. The most common template I have seen is the following. static &hellip;">
+  <meta name="description" content="I have seen various implementations of Singleton pattern in Objective-C in the past. The most common template I have seen is the following. 1
+2
+3
+4
+5 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -85,40 +89,72 @@
 
 <div class="entry-content"><p>I have seen various implementations of Singleton pattern in Objective-C in the past. The most common template I have seen is the following.</p>
 
-<pre><code>static MyClass *instance = nil;
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="n">MyClass</span> <span class="o">*</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">MyClass</span> <span class="o">*</span><span class="p">)</span><span class="nf">sharedInstance</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">@synchronized</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">instance</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">instance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-+ (MyClass *)sharedInstance {
-    @synchronized(self) {
-        if (instance == nil) {
-            instance = [[self alloc] init];
-        }
-    }
-    return instance;
-}
-</code></pre>
 
 <p>As you can see, it locks the method using self. The issue with this code is that it can get very slow if this method is called hundreds of times, because the code to instantiate the shared instance must be thread-safe. I was researching for a better way to make this faster, then I found <a href="http://eschatologist.net/blog/?p=178">this article</a>. The comment section of the article details the use of “Method Swizzling” to replace the method to access the shared instance with more optimised code (simply returning the instance without a check). Method swizzling allows us to modify the mapping from a selector to an implementation.</p>
 
+<!--more-->
+
+
 <p>I have tried to use the code provided, but it failed to work. I have done some digging around, and I found an article on <a href="http://www.cocoadev.com/index.pl?MethodSwizzling">CocoaDev</a> detailing the swizzling techniques. I have created a category of NSObject using one of the implementation, and modified my Singleton code to the following.</p>
 
-<pre><code>static MyClass *instance = nil;
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="n">MyClass</span> <span class="o">*</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">MyClass</span> <span class="o">*</span><span class="p">)</span><span class="nf">sharedInstance</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">@synchronized</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">instance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">instance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MyClass</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">OSMemoryBarrier</span><span class="p">();</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">swizzleClassMethod:</span><span class="k">@selector</span><span class="p">(</span><span class="n">sharedInstance</span><span class="p">)</span>
+</span><span class='line'>                 <span class="nl">withClassMethod:</span><span class="k">@selector</span><span class="p">(</span><span class="n">sharedInstance2</span><span class="p">)];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">MyClass</span> <span class="o">*</span><span class="p">)</span><span class="nf">sharedInstance2</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-+ (MyClass *)sharedInstance {
-    @synchronized(self) {
-        if (!instance) {
-            instance = [[MyClass alloc] init];
-            OSMemoryBarrier();
-            [self swizzleClassMethod:@selector(sharedInstance)
-                 withClassMethod:@selector(sharedInstance2)];
-        }
-    }
-    return instance;
-}
-
-+ (MyClass *)sharedInstance2 {
-    return instance;
-}
-</code></pre>
 
 <p>The above code worked very well. The performance of initialisation would be much slower than the original implementation, but it would be extremely fast after the first initialisation.</p>
 
