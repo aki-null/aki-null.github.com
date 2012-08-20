@@ -4,7 +4,7 @@
   <title><![CDATA[Nullified Construction]]></title>
   <link href="http://aki-null.github.com/atom.xml" rel="self"/>
   <link href="http://aki-null.github.com/"/>
-  <updated>2012-08-20T16:54:09+10:00</updated>
+  <updated>2012-08-20T16:57:25+10:00</updated>
   <id>http://aki-null.github.com/</id>
   <author>
     <name><![CDATA[Akihiro Noguchi]]></name>
@@ -18,7 +18,7 @@
     <link href="http://aki-null.github.com/blog/2012/08/20/cbs-installing-apps/"/>
     <updated>2012-08-20T16:23:00+10:00</updated>
     <id>http://aki-null.github.com/blog/2012/08/20/cbs-installing-apps</id>
-    <content type="html"><![CDATA[<p>OS X でのアプリのインストールが非常に面倒だ。最悪のパターンはディスクイメージ（.dmg）にアプリが格納されているパターン。</p>
+    <content type="html"><![CDATA[<p>OS X でのアプリのインストールが非常に面倒だ。最悪のパターンはディスクイメージ（.dmg）。</p>
 
 <ol>
 <li>ディスクイメージをダウンロード</li>
