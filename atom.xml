@@ -4,7 +4,7 @@
   <title><![CDATA[Nullified Construction]]></title>
   <link href="http://aki-null.github.com/atom.xml" rel="self"/>
   <link href="http://aki-null.github.com/"/>
-  <updated>2012-08-20T16:52:58+10:00</updated>
+  <updated>2012-08-20T16:54:09+10:00</updated>
   <id>http://aki-null.github.com/</id>
   <author>
     <name><![CDATA[Akihiro Noguchi]]></name>
@@ -30,6 +30,9 @@
 </ol>
 
 
+<!--more-->
+
+
 <p>zipで圧縮されたアプリの場合もハードルが高い。</p>
 
 <ol>
@@ -49,7 +52,7 @@
 
 <p>なぜかあまりポピュラーでは無いのだが、<a href="https://github.com/potionfactory/LetsMove/">LetsMove</a> というライブラリを使えば、簡単に解決できる。LetsMoveを使うと、アプリが起動した際にApplicationsフォルダに入っていない場合、以下のようなダイアログを表示することが出来る。</p>
 
-<p><img src="http://blog.aki-null.net/images/LetsMove/dialog.png" alt="LetsMoveダイアログ" /></p>
+<p><img src="http://blog.aki-null.net/images/letsmove/dialog.png" alt="LetsMoveダイアログ" /></p>
 
 <p>ダイアログを見れば分かるように、アプリが自分でApplicationsフォルダに移動してくれる。僕みたいな面倒くさがり屋や、OS X 初心者には非常に優しい。もしApplicationsフォルダに普段アプリを置かない人は、チェックボックスをオンにすれば次からは表示されないので安心。</p>
 
