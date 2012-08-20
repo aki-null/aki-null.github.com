@@ -9,9 +9,11 @@ tags:
 
 Twitter には1つの投稿につき140文字までしか送信できないルールがある。普通に考えると、それぞれのプログラミング言語の API を使って普通に文字数を数えれば思うだろう。しかし、この実装が簡単に見える機能にはいろいろな罠が潜んでいる。
 
+<!--more-->
+
 ## URL
 
-まず、Twitter に投稿するツイートに含まれるリンクはすべて t.co という Twitter 公式の URL 短縮サービスによって短縮されてしまう。ここで厄介になるのだが、なんと「140文字まで」という制限は、URL を短縮したあとの文字数に適用される、という仕様である。つまり、Twitter 内部の URL 認識する使用を完全に再現しないと、正確に最終的な文字数を数えることは出来ない。更に、t.co で短縮化された URL の文字数は静的ではないので、[test/configuration](https://dev.twitter.com/docs/api/1/get/help/configuration) API から定期的に取得して記録しておく必要がある。
+Twitter に投稿するツイートに含まれるリンクはすべて t.co という Twitter 公式の URL 短縮サービスによって短縮されてしまうのだが、「140文字まで」という制限はURL を短縮したあとの文字数に適用される。つまり、Twitter 内部の URL 認識する使用を完全に再現しないと、正確に最終的な文字数を数えることは出来ない。更に、t.co で短縮化された URL の文字数は静的ではないので、[test/configuration][1] API から定期的に取得して記録しておく必要がある。
 
 次に、https で始まる URL が t.co によって短縮された場合、t.co 化された URL も https で始まるようになる。なので、先程の API から両方の URL の長さの値が取得することができる。この記事を書いている時点では通常の URL の場合20文字、https で始まる URL の場合は21文字となっている。
 
@@ -31,11 +33,16 @@ Twitter には1つの投稿につき140文字までしか送信できないル�
 
 正確に文字数を数えるのは非常に難しい。そこで Twitter はいくつか URL を認識したり、文字数を数えるライブラリを複数の言語向けに公開している。
 
-- Objective-C: [https://github.com/twitter/twitter-text-objc](twitter-text-objc) 
-- Java: [https://github.com/twitter/twitter-text-java](twitter-text-java) 
-- Javascript: [https://github.com/twitter/twitter-text-js](twitter-text-js) 
-- Ruby: [https://github.com/twitter/twitter-text-rb](twitter-text-rb) 
+- Objective-C: [twitter-text-objc][2]
+- Java: [twitter-text-java][3]
+- Javascript: [twitter-text-js][4]
+- Ruby: [twitter-text-rb][5]
 
+自分で正確な URL 認識を実装したい場合は、[twitter-text-comformance][6] リポジトリにあるテストデータをユニットテストに使用すると良いだろう。
 
-
-自分で正確な URL 認識を実装したい場合は、[twitter-text-comformance](https://github.com/twitter/twitter-text-conformance) リポジトリにあるテストデータをユニットテストに使用すると良いだろう。
+[1]: https://dev.twitter.com/docs/api/1/get/help/configuration
+[2]: https://github.com/twitter/twitter-text-objc
+[3]: https://github.com/twitter/twitter-text-java
+[4]: https://github.com/twitter/twitter-text-js
+[5]: https://github.com/twitter/twitter-text-rb
+[6]: https://github.com/twitter/twitter-text-conformance

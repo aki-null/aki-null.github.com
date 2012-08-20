@@ -11,26 +11,32 @@ I’ve been working on optimising my Twitter client using Grand Central Dispatch
 
 GCD makes it easier for programmers to perform tasks on different threads to optimise its algorithm performance. There are other interesting usages, which I will probably cover later. The GCD uses the new language feature of Objective-C 2.1 (also available on C and C++), called Blocks. Blocks lets us create closure-like objects to make it easy to execute a block of code parallel to the main thread. Blocks can also be used in C or C++. I’m not going to cover how to write blocks in this post, so it may be good to have a [read][2] about it if you don’t already know how it works.
 
+<!--more-->
+
 The first example I’m going to cover is simple batch processing. It is quite common to batch process data in a loop, but it is usually done on the main thread, which is not desirable for multicore processors.
 
 The following code is a small loop that can be seen in many applications.
 
-    // iterate through all tab items and execute an expensive operation
-    for (NSTabViewItem *currentItem in [tabView tabViewItems]) {
-        [[currentItem identifier] doExpensiveOperation];
-    }
+{% codeblock lang:objc %}
+// iterate through all tab items and execute an expensive operation
+for (NSTabViewItem *currentItem in [tabView tabViewItems]) {
+    [[currentItem identifier] doExpensiveOperation];
+}
+{% endcodeblock %}
 
 As you can see, this code will only utilise one core, which is not efficient for multicore processors. This is where we can introduce one of the GCD feature. The following code basically replaces the loop with GCD batch processing function.
 
-    // get all tab items
-    NSArray *tabItems = [tabView tabViewItems];
-    dispatch_apply([tabItems count],
-            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-            ^(size_t index) {
-                NSTabViewItem *currentItem;
-                currentItem = [tabItems objectAtIndex:index];
-                [[currentItem identifier] doExpensiveOperation];
-            });
+{% codeblock lang:objc %}
+// get all tab items
+NSArray *tabItems = [tabView tabViewItems];
+dispatch_apply([tabItems count],
+        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+        ^(size_t index) {
+            NSTabViewItem *currentItem;
+            currentItem = [tabItems objectAtIndex:index];
+            [[currentItem identifier] doExpensiveOperation];
+        });
+{% endcodeblock %}
 
 The *“dispatch_apply” *function is used to batch process a specified block. The first argument specifies the number of loops to execute. In the example’s case, it is the number of tab items.
 
