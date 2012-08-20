@@ -4,7 +4,7 @@
   <title><![CDATA[Nullified Construction]]></title>
   <link href="http://aki-null.github.com/atom.xml" rel="self"/>
   <link href="http://aki-null.github.com/"/>
-  <updated>2012-08-20T16:57:30+10:00</updated>
+  <updated>2012-08-20T17:01:39+10:00</updated>
   <id>http://aki-null.github.com/</id>
   <author>
     <name><![CDATA[Akihiro Noguchi]]></name>
@@ -46,7 +46,7 @@
 
 <p>ディスクイメージよりは良いが、非常に面倒。両方で共通の問題は、もしユーザがApplicationsフォルダについて知らない場合は完全に詰まる。ディスクイメージの場合、Applicationsフォルダへのエイリアスを作って置いておけば分かりやすいが、そもそもディスクイメージというコンセプト自体を知らないユーザはいくらでも居るので、イジェクトせずにそのまま放置するユーザも絶対いるはずだ。</p>
 
-<p>Mac App Store を使えば上記の問題を解決する。しかしウェブで普通に配布する場合は、自動インストールなどは出来ない。</p>
+<p>Mac App Store を使えば上記の問題は解決できるが、ウェブで普通に配布する場合は自動インストールなどは出来ない。</p>
 
 <h2>Let&#8217;s Move!</h2>
 
